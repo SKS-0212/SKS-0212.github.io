@@ -8,6 +8,7 @@ use crate::service::project::{load_project, load_projects};
 use crate::scanner::discovery::discover_projects;
 use crate::config::loader::load_config;
 use std::path::Path;
+use crate::service::portfolio::build_portfolio;
 fn main() {
 
   let config =  match load_config(Path::new("rustfolio.toml")) {
@@ -19,8 +20,9 @@ fn main() {
     };
     let report = load_projects(&config.projects);
 
-    println!("Profile {:?}",config.profile);
-    println!("Project report {:?}",report);
+    let portfolio = build_portfolio(config,report);
+
+    println!("{:#?}",portfolio);
 
 
 }
