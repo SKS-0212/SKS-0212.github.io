@@ -1,0 +1,10 @@
+[package]
+name = "rustfolio"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+serde = { version = "1.0.229", features = ["derive"] }
+serde_yaml_ng = "0.10.0"
+toml = "1.1.6"
+log = "0.4.34"

@@ -1,0 +1,9 @@
+projects = [
+    "../test-projects/project-a",
+    "../test-projects/project-b"
+]
+
+[profile]
+name = "Sachin Kumar Singh"
+headline = "Software Engineer"
+bio = "Building systems and software with Rust."
