@@ -1,7 +1,9 @@
-
 use crate::model::portfolio::Portfolio;
 
 pub fn render_portfolio(portfolio: &Portfolio) -> String {
+    let name = escape_html(&portfolio.profile.name);
+    let headline = escape_html(&portfolio.profile.headline);
+    let bio = escape_html(&portfolio.profile.bio);
     format!(
         r#"<!DOCTYPE html>
 <html lang="en">
@@ -18,9 +20,19 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
     </main>
 </body>
 </html>"#,
-        portfolio.profile.name,
-        portfolio.profile.name,
-        portfolio.profile.headline,
-        portfolio.profile.bio,
+        name,
+        name,
+        headline,
+        bio,
     )
+}
+
+fn escape_html(input: &str) ->String{
+    input
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("\"", "&quot;")
+        .replace("'", "&#39;")
+
 }

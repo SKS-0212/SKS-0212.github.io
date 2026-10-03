@@ -4,6 +4,10 @@ projects = [
 ]
 
 [profile]
-name = "Sachin Kumar Singh"
-headline = "Software Engineer"
-bio = "Building systems and software with Rust."
+name = "Sachin <Kumar>"
+headline = "Rust & Systems"
+bio = "Building \"fast\" software."
+#[profile]
+#name = "Sachin Kumar Singh"
+#headline = "Software Engineer"
+#bio = "Building systems and software with Rust."
