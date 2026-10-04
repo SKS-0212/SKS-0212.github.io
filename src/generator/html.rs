@@ -7,10 +7,11 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
     let headline = escape_html(&portfolio.profile.headline);
     let bio = escape_html(&portfolio.profile.bio);
 
-    let mut project_html = String::new();
-    for project in &portfolio.projects{
-        let html =  render_project(project);
-        project_html.push_str(&html);
+    let mut projects_html = String::new();
+
+    for project in &portfolio.projects {
+        let html = render_project(project);
+        projects_html.push_str(&html);
     }
 
     format!(
@@ -19,23 +20,40 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="assets/style.css">
+
     <title>{}</title>
 </head>
+
 <body>
-    <main>
-        <h1>{}</h1>
-        <h2>{}</h2>
-        <p>{}</p>
-    </main>
-    <section>{}</section>
+    <div class="page">
+
+        <main class="hero">
+            <h1>{}</h1>
+            <h2>{}</h2>
+            <p>{}</p>
+        </main>
+
+        <section class="projects">
+            <div class="section-header">
+                <p class="section-label">Selected work</p>
+                <h2>Projects</h2>
+            </div>
+
+            <div class="project-grid">
+                {}
+            </div>
+        </section>
+
+    </div>
 </body>
 </html>"#,
         name,
         name,
         headline,
         bio,
-        project_html
+        projects_html,
     )
 }
 

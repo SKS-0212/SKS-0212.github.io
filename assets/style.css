@@ -1,14 +1,278 @@
+/* =========================================================
+   Rustfolio — Base Design System
+   ========================================================= */
+
 :root {
-    font-family: system-ui, sans-serif;
+    /* Colors */
+    --color-background: #fafafa;
+    --color-surface: #ffffff;
+
+    --color-text: #18181b;
+    --color-text-muted: #71717a;
+
+    --color-border: #e4e4e7;
+
+    /* Layout */
+    --page-width: 1100px;
+
+    /* Spacing */
+    --space-xs: 0.5rem;
+    --space-sm: 0.75rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 4rem;
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+}
+
+
+/* =========================================================
+   Reset / Base
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
     margin: 0;
+
+    background: var(--color-background);
+    color: var(--color-text);
+
+    font-family:
+            Inter,
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+
+    line-height: 1.6;
+
+    -webkit-font-smoothing: antialiased;
 }
 
-main,
-section {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 2rem;
+h1,
+h2,
+h3,
+p {
+    margin-top: 0;
+}
+
+a {
+    color: inherit;
+}
+
+
+/* =========================================================
+   Page Layout
+   ========================================================= */
+
+.page {
+    width: min(calc(100% - 2rem), var(--page-width));
+    margin-inline: auto;
+}
+
+
+/* =========================================================
+   Hero
+   ========================================================= */
+
+.hero {
+    max-width: 760px;
+
+    padding-top: 7rem;
+    padding-bottom: 5rem;
+}
+
+.hero h1 {
+    margin-bottom: var(--space-sm);
+
+    font-size: clamp(2.75rem, 7vw, 5.5rem);
+    font-weight: 700;
+
+    line-height: 0.95;
+    letter-spacing: -0.055em;
+}
+
+.hero h2 {
+    margin-bottom: var(--space-lg);
+
+    color: var(--color-text-muted);
+
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 500;
+
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+}
+
+.hero p {
+    max-width: 620px;
+    margin-bottom: 0;
+
+    color: var(--color-text-muted);
+
+    font-size: 1.1rem;
+    line-height: 1.75;
+}
+
+
+/* =========================================================
+   Projects Section
+   ========================================================= */
+
+.projects {
+    padding-bottom: 6rem;
+}
+
+.section-header {
+    margin-bottom: var(--space-xl);
+}
+
+.section-label {
+    margin-bottom: var(--space-xs);
+
+    color: var(--color-text-muted);
+
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.section-header h2 {
+    margin-bottom: 0;
+
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 650;
+
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+}
+
+
+/* =========================================================
+   Project Container
+
+   We intentionally keep project styling minimal here.
+   Proper project cards are the next component.
+   ========================================================= */
+
+.project-grid {
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-xl);
+}
+
+.project-grid article {
+    padding-block: var(--space-xl);
+
+    border-top: 1px solid var(--color-border);
+}
+
+.project-grid article:last-child {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.project-grid article > h3 {
+    margin-bottom: var(--space-sm);
+
+    font-size: 1.5rem;
+    font-weight: 600;
+
+    letter-spacing: -0.025em;
+}
+
+.project-grid article > p {
+    color: var(--color-text-muted);
+}
+
+.project-grid article > a {
+    display: inline-block;
+
+    margin-bottom: var(--space-lg);
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    text-decoration: none;
+}
+
+.project-grid article > a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   README / Markdown Content
+   ========================================================= */
+
+.project-grid article > div {
+    margin-top: var(--space-xl);
+}
+
+.project-grid article > div h1,
+.project-grid article > div h2,
+.project-grid article > div h3 {
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-sm);
+
+    letter-spacing: -0.02em;
+}
+
+.project-grid article > div h1 {
+    font-size: 1.5rem;
+}
+
+.project-grid article > div h2 {
+    font-size: 1.25rem;
+}
+
+.project-grid article > div h3 {
+    font-size: 1.1rem;
+}
+
+.project-grid article > div p,
+.project-grid article > div li {
+    color: var(--color-text-muted);
+}
+
+.project-grid article > div ul,
+.project-grid article > div ol {
+    padding-left: 1.25rem;
+}
+
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .page {
+        width: min(calc(100% - 1.5rem), var(--page-width));
+    }
+
+    .hero {
+        padding-top: 4.5rem;
+        padding-bottom: 4rem;
+    }
+
+    .projects {
+        padding-bottom: 4rem;
+    }
 }
