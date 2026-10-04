@@ -1,16 +1,25 @@
 /* =========================================================
-   Rustfolio — Base Design System
+   Rustfolio
+   Base Design System
    ========================================================= */
 
 :root {
     /* Colors */
     --color-background: #fafafa;
     --color-surface: #ffffff;
+    --color-surface-subtle: #f4f4f5;
 
     --color-text: #18181b;
     --color-text-muted: #71717a;
 
     --color-border: #e4e4e7;
+    --color-border-hover: #c7c7cc;
+
+    --color-code-background: #18181b;
+    --color-code-text: #f4f4f5;
+
+    --shadow-card:
+            0 20px 40px rgba(0, 0, 0, 0.05);
 
     /* Layout */
     --page-width: 1100px;
@@ -82,6 +91,7 @@ a {
 
 .page {
     width: min(calc(100% - 2rem), var(--page-width));
+
     margin-inline: auto;
 }
 
@@ -121,6 +131,7 @@ a {
 
 .hero p {
     max-width: 620px;
+
     margin-bottom: 0;
 
     color: var(--color-text-muted);
@@ -166,95 +177,429 @@ a {
 
 
 /* =========================================================
-   Project Container
-
-   We intentionally keep project styling minimal here.
-   Proper project cards are the next component.
+   Project Grid
    ========================================================= */
 
 .project-grid {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+
+    grid-template-columns: 1fr;
 
     gap: var(--space-xl);
 }
 
-.project-grid article {
-    padding-block: var(--space-xl);
 
-    border-top: 1px solid var(--color-border);
+/* =========================================================
+   Project Card
+   ========================================================= */
+
+.project-card {
+    position: relative;
+
+    padding: 2rem;
+
+    overflow: hidden;
+
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    transition:
+            transform 180ms ease,
+            border-color 180ms ease,
+            box-shadow 180ms ease;
 }
 
-.project-grid article:last-child {
-    border-bottom: 1px solid var(--color-border);
-}
+.project-card:hover {
+    transform: translateY(-3px);
 
-.project-grid article > h3 {
-    margin-bottom: var(--space-sm);
+    border-color: var(--color-border-hover);
 
-    font-size: 1.5rem;
-    font-weight: 600;
-
-    letter-spacing: -0.025em;
-}
-
-.project-grid article > p {
-    color: var(--color-text-muted);
-}
-
-.project-grid article > a {
-    display: inline-block;
-
-    margin-bottom: var(--space-lg);
-
-    font-size: 0.9rem;
-    font-weight: 600;
-
-    text-decoration: none;
-}
-
-.project-grid article > a:hover {
-    text-decoration: underline;
+    box-shadow: var(--shadow-card);
 }
 
 
 /* =========================================================
-   README / Markdown Content
+   Featured Project
    ========================================================= */
 
-.project-grid article > div {
-    margin-top: var(--space-xl);
+.project-card.featured {
+    border-color: var(--color-border-hover);
+
+    background:
+            linear-gradient(
+                    145deg,
+                    var(--color-surface) 0%,
+                    var(--color-surface-subtle) 100%
+            );
 }
 
-.project-grid article > div h1,
-.project-grid article > div h2,
-.project-grid article > div h3 {
+.project-card.featured::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 2rem;
+    right: 2rem;
+
+    height: 2px;
+
+    background: var(--color-text);
+
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   Project Header
+   ========================================================= */
+
+.project-header {
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-md);
+
+    margin-bottom: var(--space-lg);
+}
+
+.project-heading {
+    display: flex;
+
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: var(--space-sm);
+}
+
+.project-title {
+    margin: 0;
+
+    font-size: 1.6rem;
+    font-weight: 650;
+
+    line-height: 1.2;
+    letter-spacing: -0.035em;
+}
+
+
+/* =========================================================
+   Featured Badge
+   ========================================================= */
+
+.featured-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 0.25rem 0.6rem;
+
+    background: var(--color-text);
+    color: var(--color-background);
+
+    border-radius: 999px;
+
+    font-size: 0.7rem;
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   Project Metadata
+   ========================================================= */
+
+.project-meta {
+    display: flex;
+
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: var(--space-xs);
+}
+
+.project-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 0.3rem 0.65rem;
+
+    background: var(--color-background);
+    color: var(--color-text-muted);
+
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+
+    font-size: 0.75rem;
+    font-weight: 500;
+
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   Project Description
+   ========================================================= */
+
+.project-description {
+    max-width: 700px;
+
+    margin-bottom: var(--space-lg);
+
+    color: var(--color-text-muted);
+
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   Project Actions
+   ========================================================= */
+
+.project-actions {
+    display: flex;
+
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: var(--space-sm);
+
+    margin-bottom: var(--space-xl);
+}
+
+.project-actions a {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 0.6rem 0.9rem;
+
+    color: var(--color-text);
+    background: transparent;
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+
+    font-size: 0.85rem;
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    text-decoration: none;
+
+    transition:
+            background 160ms ease,
+            border-color 160ms ease,
+            transform 160ms ease;
+}
+
+.project-actions a:hover {
+    background: var(--color-background);
+
+    border-color: var(--color-border-hover);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   Project README / Markdown Content
+   ========================================================= */
+
+.project-content {
+    padding-top: var(--space-lg);
+
+    border-top: 1px solid var(--color-border);
+}
+
+.project-content > :first-child {
+    margin-top: 0;
+}
+
+.project-content > :last-child {
+    margin-bottom: 0;
+}
+
+.project-content h4,
+.project-content h5,
+.project-content h6 {
     margin-top: var(--space-xl);
     margin-bottom: var(--space-sm);
 
-    letter-spacing: -0.02em;
+    color: var(--color-text);
+
+    line-height: 1.3;
+    letter-spacing: -0.025em;
 }
 
-.project-grid article > div h1 {
-    font-size: 1.5rem;
+.project-content h4 {
+    font-size: 1.35rem;
+    font-weight: 650;
 }
 
-.project-grid article > div h2 {
-    font-size: 1.25rem;
+.project-content h5 {
+    font-size: 1.15rem;
+    font-weight: 600;
 }
 
-.project-grid article > div h3 {
-    font-size: 1.1rem;
+.project-content h6 {
+    font-size: 1rem;
+    font-weight: 600;
 }
 
-.project-grid article > div p,
-.project-grid article > div li {
+.project-content p {
+    margin-bottom: var(--space-md);
+
+    color: var(--color-text-muted);
+
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.project-content ul,
+.project-content ol {
+    margin-top: var(--space-md);
+    margin-bottom: var(--space-md);
+
+    padding-left: 1.4rem;
+}
+
+.project-content li {
+    color: var(--color-text-muted);
+
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.project-content li + li {
+    margin-top: 0.25rem;
+}
+
+
+/* =========================================================
+   Markdown Links
+   ========================================================= */
+
+.project-content a {
+    color: var(--color-text);
+
+    font-weight: 500;
+
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-border-hover);
+    text-underline-offset: 3px;
+}
+
+.project-content a:hover {
+    text-decoration-color: var(--color-text);
+}
+
+
+/* =========================================================
+   Inline Code
+   ========================================================= */
+
+.project-content code {
+    padding: 0.15rem 0.35rem;
+
+    background: var(--color-background);
+
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+
+    font-family:
+            "SFMono-Regular",
+            Consolas,
+            "Liberation Mono",
+            monospace;
+
+    font-size: 0.85em;
+}
+
+
+/* =========================================================
+   Markdown Code Blocks
+   ========================================================= */
+
+.project-content pre {
+    overflow-x: auto;
+
+    margin-block: var(--space-lg);
+
+    padding: var(--space-lg);
+
+    background: var(--color-code-background);
+    color: var(--color-code-text);
+
+    border-radius: var(--radius-md);
+}
+
+.project-content pre code {
+    padding: 0;
+
+    background: transparent;
+    color: inherit;
+
+    border: 0;
+
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   Blockquotes
+   ========================================================= */
+
+.project-content blockquote {
+    margin-inline: 0;
+    margin-block: var(--space-lg);
+
+    padding-left: var(--space-lg);
+
+    border-left: 3px solid var(--color-border);
+
     color: var(--color-text-muted);
 }
 
-.project-grid article > div ul,
-.project-grid article > div ol {
-    padding-left: 1.25rem;
+.project-content blockquote p {
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   Horizontal Rule
+   ========================================================= */
+
+.project-content hr {
+    margin-block: var(--space-xl);
+
+    border: 0;
+    border-top: 1px solid var(--color-border);
+}
+
+
+/* =========================================================
+   Images generated from Markdown
+   ========================================================= */
+
+.project-content img {
+    display: block;
+
+    max-width: 100%;
+    height: auto;
+
+    margin-block: var(--space-lg);
+
+    border-radius: var(--radius-md);
 }
 
 
@@ -264,7 +609,10 @@ a {
 
 @media (max-width: 700px) {
     .page {
-        width: min(calc(100% - 1.5rem), var(--page-width));
+        width: min(
+                calc(100% - 1.5rem),
+                var(--page-width)
+        );
     }
 
     .hero {
@@ -274,5 +622,48 @@ a {
 
     .projects {
         padding-bottom: 4rem;
+    }
+
+    .project-card {
+        padding: 1.4rem;
+
+        border-radius: var(--radius-md);
+    }
+
+    .project-card.featured::before {
+        left: 1.4rem;
+        right: 1.4rem;
+    }
+
+    .project-title {
+        font-size: 1.4rem;
+    }
+
+    .project-content pre {
+        padding: var(--space-md);
+    }
+}
+
+/* =========================================================
+   Dark Mode
+   ========================================================= */
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-background: #09090b;
+        --color-surface: #111113;
+        --color-surface-subtle: #18181b;
+
+        --color-text: #f4f4f5;
+        --color-text-muted: #a1a1aa;
+
+        --color-border: #27272a;
+        --color-border-hover: #3f3f46;
+
+        --color-code-background: #18181b;
+        --color-code-text: #f4f4f5;
+
+        --shadow-card:
+                0 20px 45px rgba(0, 0, 0, 0.28);
     }
 }

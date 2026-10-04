@@ -1,6 +1,6 @@
 use crate::model::portfolio::Portfolio;
 use crate::model::project::Project;
-use pulldown_cmark::{Parser,html};
+use pulldown_cmark::{html, HeadingLevel, Parser, Event, Tag, TagEnd};
 
 pub fn render_portfolio(portfolio: &Portfolio) -> String {
     let name = escape_html(&portfolio.profile.name);
@@ -20,7 +20,7 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta name="color-scheme" content="light dark">
     <link rel="stylesheet" href="assets/style.css">
 
     <title>{}</title>
@@ -60,12 +60,30 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
 
 
 fn render_project(project: &Project) -> String {
+    let card_class = if project.featured {
+        "project-card featured"
+    } else {
+        "project-card"
+    };
     let name = escape_html(&project.name);
+
+    let featured_html = if project.featured {
+        r#"<span class="featured-badge">Featured</span>"#.to_string()
+    } else {
+        String::new()
+    };
     let version  = escape_html(&project.version);
+    let version_html =  format!(
+        r#"<span class="project-badge">v{}</span>"#,
+        version
+    );
     let category_html = match &project.category {
         Some(category) => {
             let category = escape_html(category);
-            format!("<p>{}</p>", category)
+            format!(
+                r#"<span class="project-badge">{}</span>"#,
+                category
+            )
         }
         None => String::new(),
     };
@@ -73,7 +91,10 @@ fn render_project(project: &Project) -> String {
     let description_html = match &project.description{
         Some(description)=>{
             let description = escape_html(description);
-            format!("<p>{}</p>",description)
+            format!(
+                r#"<p class="project-description">{}</p>"#,
+                description
+            )
         },
         None => String::new(),
     };
@@ -82,7 +103,12 @@ fn render_project(project: &Project) -> String {
         Some(repository)=>{
             let repository = escape_html(repository);
             format!(
-                "<a href=\"{}\" target=\"_blank\" rel=\"noopener noreferrer\">View Repository</a>",
+                r#"
+                <div class="project-actions">
+                    <a href="{}" target="_blank" rel="noopener noreferrer">
+                         View Repository →
+                    </a>
+                </div>"#,
                 repository
             )
         },
@@ -92,32 +118,67 @@ fn render_project(project: &Project) -> String {
     let readme_html = render_markdown(&project.readme);
 
     format!(
-        r#"<article>
-        <h3>{}</h3>
-    <p>{}</p>
+        r#"<article class="{}">
+    <div class="project-header">
+        <div class="project-heading">
+            <h3 class="project-title">{}</h3>
+            {}
+        </div>
+
+        <div class="project-meta">
+            {}
+            {}
+        </div>
+    </div>
+
+    {}
+
+    {}
+
+    <div class="project-content">
         {}
-        {}
-        {}
-    <div>{}</div>
-    </article>"#,
+    </div>
+</article>"#,
+        card_class,
         name,
-        version,
+        featured_html,
         category_html,
+        version_html,
         description_html,
         repository_html,
-        readme_html
-
+        readme_html,
     )
 }
 
 fn render_markdown(markdown: &str)->String{
     let mut html_output = String::new();
     let parser = Parser::new(markdown);
-    html::push_html(&mut html_output, parser);
+
+    let transformed = parser.map(|event| {
+        match event {
+            Event::Start(Tag::Heading {
+                             level, id, classes, attrs })
+            => Event::Start(Tag::Heading {
+                level: shift_heading_level(level), id, classes, attrs, }),
+            Event::End(TagEnd::Heading(level)) => {
+                Event::End(TagEnd::Heading(shift_heading_level(level)))
+            }
+            event => event,
+        }
+    });
+
+    html::push_html(&mut html_output, transformed);
     html_output
 }
+fn shift_heading_level(level: HeadingLevel)-> HeadingLevel{
+    match level {
+        HeadingLevel::H1 => HeadingLevel::H4,
+        HeadingLevel::H2 => HeadingLevel::H5,
+        HeadingLevel::H3 => HeadingLevel::H6,
 
-
+        HeadingLevel::H4 | HeadingLevel::H5 | HeadingLevel::H6 => HeadingLevel::H6
+    }
+}
 
 fn escape_html(input: &str) ->String{
     input
