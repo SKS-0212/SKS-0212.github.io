@@ -1,6 +1,5 @@
 use std::path::{Path, PathBuf};
 use std::fs;
-use std::fs::read;
 
 pub fn discover_projects(root: &Path) ->Result<Vec<PathBuf>, std::io::Error>{
     let mut paths  = Vec::new();

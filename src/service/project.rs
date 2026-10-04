@@ -1,6 +1,5 @@
 use std::error::Error;
 use std::fmt::Formatter;
-use std::fs::read_to_string;
 use std::path::{Path, PathBuf};
 use crate::scanner::cargo::{read_cargo, CargoScanError};
 use crate::scanner::readme::{read_readme,ReadmeScanError};

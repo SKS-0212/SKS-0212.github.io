@@ -15,7 +15,6 @@ pub struct CargoPackage{
    pub  version: String,
    pub description: Option<String>,
     pub repository: Option<String>,
-    edition: String,
 }
 
 #[derive(Debug)]

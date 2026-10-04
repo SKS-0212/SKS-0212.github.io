@@ -4,9 +4,7 @@ mod service;
 mod config;
 mod generator;
 
-use std::io;
-use crate::service::project::{load_project, load_projects};
-use crate::scanner::discovery::discover_projects;
+use crate::service::project::load_projects;
 use crate::config::loader::load_config;
 use std::path::Path;
 use crate::service::portfolio::build_portfolio;
