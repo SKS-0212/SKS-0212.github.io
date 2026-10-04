@@ -43,25 +43,51 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
 fn render_project(project: &Project) -> String {
     let name = escape_html(&project.name);
     let version  = escape_html(&project.version);
-    let category = match &project.category{
-        Some(category)=>escape_html(category),
-        None=>"".to_string(),
+    let category_html = match &project.category {
+        Some(category) => {
+            let category = escape_html(category);
+            format!("<p>{}</p>", category)
+        }
+        None => String::new(),
+    };
 
+    let description_html = match &project.description{
+        Some(description)=>{
+            let description = escape_html(description);
+            format!("<p>{}</p>",description)
+        },
+        None => String::new(),
+    };
+
+    let repository_html = match &project.repository {
+        Some(repository)=>{
+            let repository = escape_html(repository);
+            format!(
+                "<a href=\"{}\" target=\"_blank\" rel=\"noopener noreferrer\">View Repository</a>",
+                repository
+            )
+        },
+        None => String::new()
     };
 
     let readme_html = render_markdown(&project.readme);
 
     format!(
         r#"<article>
-    <h3>{}</h3>
+        <h3>{}</h3>
     <p>{}</p>
-    <p>{}</p>
+        {}
+        {}
+        {}
     <div>{}</div>
     </article>"#,
         name,
         version,
-        category,
+        category_html,
+        description_html,
+        repository_html,
         readme_html
+
     )
 }
 
