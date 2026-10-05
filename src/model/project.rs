@@ -6,8 +6,8 @@ pub struct Project{
     pub description: Option<String>,
     pub version: String,
     pub repository: Option<String>,
-    
     pub category: Option<String>,
     pub featured: bool,
+    pub technologies: Vec<String>,
     pub readme: String,
 }

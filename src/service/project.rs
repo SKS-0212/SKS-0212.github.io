@@ -64,7 +64,8 @@ pub fn load_project(project_path: &Path)->Result<Project, ProjectLoadError>{
         repository: cargo_manifest.package.repository,
         category: readme_data.metadata.category,
         featured: readme_data.metadata.featured,
-        readme: readme_data.content
+        technologies: readme_data.metadata.technologies,
+        readme: readme_data.content,
 
     };
 

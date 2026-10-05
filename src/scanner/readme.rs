@@ -10,14 +10,16 @@ pub struct ReadmeData{
     pub content: String
 }
 
-#[derive(Deserialize,Debug)]
+#[derive(Deserialize, Debug)]
 pub struct ReadmeMetadata {
     pub category: Option<String>,
 
     #[serde(default)]
     pub featured: bool,
-}
 
+    #[serde(default)]
+    pub technologies: Vec<String>,
+}
 #[derive(Debug)]
 pub enum ReadmeScanError{
     Io(std::io::Error),

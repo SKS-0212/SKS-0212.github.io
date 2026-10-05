@@ -5,9 +5,21 @@ projects = [
 
 [profile]
 name = "Sachin Kumar Singh"
-headline = "Rust & Systems"
-bio = "Building \"fast\" software."
-#[profile]
-#name = "Sachin Kumar Singh"
-#headline = "Software Engineer"
-#bio = "Building systems and software with Rust."
+headline = "Software Engineer · Rust · Systems"
+bio = "Building reliable software and learning systems from first principles."
+location = "India"
+skills = ["Rust", "Flutter", "Java", "PostgreSQL"]
+
+[[profile.links]]
+label = "GitHub"
+url = "https://github.com/example"
+
+[[profile.links]]
+label = "LinkedIn"
+url = "https://linkedin.com/in/example"
+
+[[experience]]
+company = "Example Company"
+role = "Software Engineer"
+start = "2025"
+description = "Building production software and developer-facing systems."

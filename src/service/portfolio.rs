@@ -1,17 +1,47 @@
-use crate::config::model::RustfolioConfig;
+use crate::config::model::{LinkConfig, RustfolioConfig,ExperienceConfig};
+use crate::model::experience::Experience;
+use crate::model::link::Link;
 use crate::model::portfolio::{Portfolio, ProjectDiagnostic};
 use crate::model::profile::Profile;
 use crate::service::project::ProjectLoadReport;
+
+impl From<LinkConfig> for Link{
+    fn from(link_config: LinkConfig) -> Self {
+        Self{
+            label: link_config.label,
+            url: link_config.url
+        }
+    }
+}
+
+impl From<ExperienceConfig> for Experience{
+    fn from(config: ExperienceConfig) -> Self {
+        Self{
+            company: config.company,
+            role: config.role,
+            start: config.start,
+            end: config.end,
+            description: config.description
+        }
+    }
+}
 
 pub fn build_portfolio(
     config: RustfolioConfig,
     report: ProjectLoadReport
 ) -> Portfolio{
 
+    let links = config.profile.links
+        .into_iter()
+        .map(Link::from).collect();
+
     let profile = Profile{
         name: config.profile.name,
         headline: config.profile.headline,
         bio: config.profile.bio,
+        location: config.profile.location,
+        links,
+        skills: config.profile.skills,
     };
 
     let mut diagnostics = Vec::new();
@@ -35,9 +65,13 @@ pub fn build_portfolio(
         diagnostics.push(diagnostic);
     }
 
+    let experience = config.experience.into_iter()
+        .map(Experience::from).collect();
+
     Portfolio {
         profile,
         projects: report.projects,
-        diagnostics
+        diagnostics,
+        experience
     }
 }
