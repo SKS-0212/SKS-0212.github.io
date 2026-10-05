@@ -643,6 +643,51 @@ a {
         padding: var(--space-md);
     }
 }
+/* =========================================================
+   Diagnostic
+   ========================================================= */
+
+.diagnostics {
+    margin-top: var(--space-xl);
+    padding: var(--space-lg);
+
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.diagnostics-label {
+    margin-bottom: var(--space-md);
+
+    color: var(--color-text-muted);
+
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.diagnostic {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.diagnostic + .diagnostic {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border);
+}
+
+.diagnostic strong {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.diagnostic span {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+}
 
 /* =========================================================
    Dark Mode

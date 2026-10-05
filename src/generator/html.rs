@@ -13,6 +13,7 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
         let html = render_project(project);
         projects_html.push_str(&html);
     }
+    let diagnostic_html = render_diagnostics(&portfolio);
 
     format!(
         r#"<!DOCTYPE html>
@@ -44,6 +45,7 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
             <div class="project-grid">
                 {}
             </div>
+            {}
         </section>
 
     </div>
@@ -54,6 +56,7 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
         headline,
         bio,
         projects_html,
+        diagnostic_html
     )
 }
 
@@ -170,6 +173,39 @@ fn render_markdown(markdown: &str)->String{
     html::push_html(&mut html_output, transformed);
     html_output
 }
+
+fn render_diagnostics(portfolio: &Portfolio) -> String {
+    if portfolio.diagnostics.is_empty() {
+        return String::new();
+    }
+
+    let mut items = String::new();
+
+    for diagnostic in &portfolio.diagnostics {
+        let project = escape_html(&diagnostic.project);
+        let message = escape_html(&diagnostic.message);
+
+        items.push_str(
+            &format!(
+                r#"<div class="diagnostic">
+    <strong>{}</strong>
+    <span>{}</span>
+</div>"#,
+                project,
+                message,
+            )
+        );
+    }
+
+    format!(
+        r#"<section class="diagnostics">
+    <p class="diagnostics-label">Build notices</p>
+    {}
+</section>"#,
+        items
+    )
+}
+
 fn shift_heading_level(level: HeadingLevel)-> HeadingLevel{
     match level {
         HeadingLevel::H1 => HeadingLevel::H4,
