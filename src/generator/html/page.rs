@@ -6,6 +6,7 @@ use super::projects::render_projects;
 use super::utils::escape_html;
 use super::hero::render_hero;
 use super::experience::render_experience;
+use super::footer::render_footer;
 
 pub fn render_portfolio(portfolio: &Portfolio) -> String {
     let name = escape_html(&portfolio.profile.name);
@@ -19,6 +20,8 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
     let about_html = render_about(&portfolio.profile);
 
     let diagnostic_html = render_diagnostics(portfolio);
+
+    let footer_html = render_footer(&portfolio.profile);
 
     format!(
         r#"<!DOCTYPE html>
@@ -39,6 +42,7 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
         {experience_html}
         {about_html}
         {diagnostic_html}
+        {footer_html}
     </div>
 </body>
 </html>"#,

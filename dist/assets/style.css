@@ -612,6 +612,7 @@ select {
 .about {
     padding: 96px 0 120px;
 }
+
 .about-layout {
     display: grid;
 
@@ -694,7 +695,6 @@ select {
     content: "·";
 
     position: absolute;
-
     right: -11px;
 
     color: var(--text-muted);
@@ -752,6 +752,70 @@ select {
     color: var(--text-secondary);
 
     font-size: 0.82rem;
+}
+
+
+/* =========================================================
+   Footer
+   ========================================================= */
+
+.site-footer {
+    padding: 40px 0 48px;
+
+    border-top: 1px solid var(--border);
+}
+
+.footer-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 32px;
+}
+
+.footer-name {
+    margin: 0;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    letter-spacing: -0.01em;
+}
+
+.footer-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 24px;
+}
+
+.footer-link {
+    color: var(--text-secondary);
+
+    font-size: 0.82rem;
+
+    transition:
+            color 160ms ease,
+            transform 160ms ease;
+}
+
+.footer-link:hover {
+    color: var(--text-primary);
+
+    transform: translateY(-1px);
+}
+
+.footer-meta {
+    margin-top: 40px;
+    padding-top: 20px;
+
+    border-top: 1px solid var(--border);
+
+    color: var(--text-muted);
+
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
 }
 
 
@@ -979,6 +1043,28 @@ select {
     }
 
 
+    /* Footer */
+
+    .site-footer {
+        padding: 32px 0 40px;
+    }
+
+    .footer-main {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 18px;
+    }
+
+    .footer-links {
+        gap: 16px;
+    }
+
+    .footer-meta {
+        margin-top: 32px;
+    }
+
+
     /* Diagnostics */
 
     .diagnostic {
@@ -1104,6 +1190,16 @@ select {
 
     .about-focus {
         gap: 7px 16px;
+    }
+
+
+    /* Footer */
+
+    .footer-links {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 10px;
     }
 }
 
