@@ -3,11 +3,10 @@ use crate::model::portfolio::Portfolio;
 use super::diagnostics::render_diagnostics;
 use super::projects::render_project;
 use super::utils::escape_html;
+use super::hero::render_hero;
 
 pub fn render_portfolio(portfolio: &Portfolio) -> String {
     let name = escape_html(&portfolio.profile.name);
-    let headline = escape_html(&portfolio.profile.headline);
-    let bio = escape_html(&portfolio.profile.bio);
 
     let mut projects_html = String::new();
 
@@ -16,6 +15,8 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
         projects_html.push_str(&html);
     }
     let diagnostic_html = render_diagnostics(&portfolio);
+
+    let hero_html = render_hero(&portfolio.profile);
 
     format!(
         r#"<!DOCTYPE html>
@@ -31,14 +32,9 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
 
 <body>
     <div class="page">
+        {}
 
-        <main class="hero">
-            <h1>{}</h1>
-            <h2>{}</h2>
-            <p>{}</p>
-        </main>
-
-        <section class="projects">
+        <section class="projects" id="projects">
             <div class="section-header">
                 <p class="section-label">Selected work</p>
                 <h2>Projects</h2>
@@ -47,17 +43,15 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
             <div class="project-grid">
                 {}
             </div>
+
             {}
         </section>
-
     </div>
 </body>
 </html>"#,
         name,
-        name,
-        headline,
-        bio,
+        hero_html,
         projects_html,
-        diagnostic_html
+        diagnostic_html,
     )
 }
