@@ -13,6 +13,10 @@ pub fn write_site(output_dir: &Path, html: &str) -> Result<(), std::io::Error> {
     let destination_css = assets_dir.join("style.css");
 
     fs::copy(source_css,destination_css)?;
+    fs::copy(
+        Path::new("assets/main.js"),
+        assets_dir.join("main.js"),
+    )?;
 
     Ok(())
 }
