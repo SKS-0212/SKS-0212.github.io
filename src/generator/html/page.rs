@@ -4,6 +4,7 @@ use super::diagnostics::render_diagnostics;
 use super::projects::render_project;
 use super::utils::escape_html;
 use super::hero::render_hero;
+use super::experience::render_experience;
 
 pub fn render_portfolio(portfolio: &Portfolio) -> String {
     let name = escape_html(&portfolio.profile.name);
@@ -17,6 +18,7 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
     let diagnostic_html = render_diagnostics(&portfolio);
 
     let hero_html = render_hero(&portfolio.profile);
+    let experience_html = render_experience(&portfolio.experience);
 
     format!(
         r#"<!DOCTYPE html>
@@ -27,12 +29,12 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
     <meta name="color-scheme" content="light dark">
     <link rel="stylesheet" href="assets/style.css">
 
-    <title>{}</title>
+    <title>{name}</title>
 </head>
 
 <body>
     <div class="page">
-        {}
+        {hero_html}
 
         <section class="projects" id="projects">
             <div class="section-header">
@@ -41,17 +43,14 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
             </div>
 
             <div class="project-grid">
-                {}
+                {projects_html}
             </div>
 
-            {}
+            {diagnostic_html}
         </section>
+        {experience_html}
     </div>
 </body>
 </html>"#,
-        name,
-        hero_html,
-        projects_html,
-        diagnostic_html,
     )
 }
