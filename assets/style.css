@@ -347,7 +347,7 @@ select {
 
 
 /* =========================================================
-   Projects Section
+   Projects
    ========================================================= */
 
 .projects {
@@ -355,11 +355,6 @@ select {
 
     border-top: 1px solid var(--border);
 }
-
-
-/* =========================================================
-   Project List
-   ========================================================= */
 
 .project-grid {
     display: flex;
@@ -386,11 +381,6 @@ select {
 
     border-color: var(--border-strong);
 }
-
-
-/* =========================================================
-   Project Top
-   ========================================================= */
 
 .project-top {
     display: flex;
@@ -451,11 +441,6 @@ select {
     transform: translate(3px, -3px);
 }
 
-
-/* =========================================================
-   Project Description
-   ========================================================= */
-
 .project-description {
     display: block;
 
@@ -469,11 +454,6 @@ select {
     line-height: 1.7;
 }
 
-
-/* =========================================================
-   Project Footer
-   ========================================================= */
-
 .project-footer {
     margin-top: 32px;
 
@@ -483,11 +463,6 @@ select {
 
     gap: 32px;
 }
-
-
-/* =========================================================
-   Project Technologies
-   ========================================================= */
 
 .project-technologies {
     display: flex;
@@ -520,11 +495,6 @@ select {
     background: var(--surface);
 }
 
-
-/* =========================================================
-   Project Repository
-   ========================================================= */
-
 .project-repository {
     flex-shrink: 0;
 
@@ -548,7 +518,7 @@ select {
 
 
 /* =========================================================
-   Experience Section
+   Experience
    ========================================================= */
 
 .experience {
@@ -558,11 +528,6 @@ select {
 .experience-list {
     border-top: 1px solid var(--border);
 }
-
-
-/* =========================================================
-   Experience Item
-   ========================================================= */
 
 .experience-item {
     display: grid;
@@ -589,11 +554,6 @@ select {
     border-color: var(--border-strong);
 }
 
-
-/* =========================================================
-   Experience Period
-   ========================================================= */
-
 .experience-period {
     padding-top: 4px;
 
@@ -604,11 +564,6 @@ select {
 
     letter-spacing: 0.02em;
 }
-
-
-/* =========================================================
-   Experience Content
-   ========================================================= */
 
 .experience-content {
     max-width: 700px;
@@ -647,6 +602,102 @@ select {
 
     font-size: 0.95rem;
     line-height: 1.75;
+}
+
+
+/* =========================================================
+   About
+   ========================================================= */
+
+.about {
+    padding: 96px 0 120px;
+}
+.about-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.3fr)
+        minmax(280px, 0.7fr);
+
+    gap: 96px;
+
+    padding-top: 40px;
+
+    border-top: 1px solid var(--border);
+}
+
+.about-intro {
+    max-width: 700px;
+}
+
+.about-text {
+    margin: 0;
+
+    font-size: clamp(
+            1.6rem,
+            3.2vw,
+            2.5rem
+    );
+
+    font-weight: 400;
+
+    line-height: 1.35;
+    letter-spacing: -0.035em;
+}
+
+.about-details {
+    display: flex;
+    flex-direction: column;
+
+    gap: 36px;
+}
+
+.about-detail {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.about-detail-label {
+    color: var(--text-muted);
+
+    font-size: 0.7rem;
+    font-weight: 600;
+
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.about-detail-value {
+    color: var(--text-primary);
+
+    font-size: 0.95rem;
+}
+
+.about-focus {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 8px 18px;
+}
+
+.about-focus span {
+    position: relative;
+
+    color: var(--text-secondary);
+
+    font-size: 0.9rem;
+}
+
+.about-focus span:not(:last-child)::after {
+    content: "·";
+
+    position: absolute;
+
+    right: -11px;
+
+    color: var(--text-muted);
 }
 
 
@@ -710,8 +761,6 @@ select {
 
 @media (max-width: 900px) {
 
-    /* Hero */
-
     .hero {
         min-height: 560px;
     }
@@ -724,17 +773,12 @@ select {
         );
     }
 
-
-    /* Sections */
-
     .projects,
-    .experience {
+    .experience,
+    .about {
         padding-top: 80px;
         padding-bottom: 96px;
     }
-
-
-    /* Experience */
 
     .experience-item {
         grid-template-columns:
@@ -742,6 +786,14 @@ select {
             minmax(0, 1fr);
 
         gap: 32px;
+    }
+
+    .about-layout {
+        grid-template-columns:
+            minmax(0, 1.1fr)
+            minmax(240px, 0.9fr);
+
+        gap: 56px;
     }
 }
 
@@ -751,8 +803,6 @@ select {
    ========================================================= */
 
 @media (max-width: 700px) {
-
-    /* Page */
 
     .page {
         width: min(
@@ -820,9 +870,6 @@ select {
         margin-top: 20px;
     }
 
-
-    /* Hero Meta */
-
     .hero-meta {
         margin-top: 48px;
 
@@ -836,7 +883,8 @@ select {
     /* Shared Sections */
 
     .projects,
-    .experience {
+    .experience,
+    .about {
         padding: 72px 0 88px;
     }
 
@@ -903,6 +951,31 @@ select {
 
     .experience-description {
         margin-top: 18px;
+    }
+
+
+    /* About */
+
+    .about-layout {
+        grid-template-columns: 1fr;
+
+        gap: 48px;
+
+        padding-top: 32px;
+    }
+
+    .about-text {
+        max-width: 600px;
+
+        font-size: clamp(
+                1.5rem,
+                7vw,
+                2rem
+        );
+    }
+
+    .about-details {
+        gap: 28px;
     }
 
 
@@ -978,14 +1051,14 @@ select {
     }
 
 
-    /* Section */
+    /* Shared */
 
     .section-header h2 {
         font-size: 2.2rem;
     }
 
 
-    /* Project */
+    /* Projects */
 
     .project-item {
         padding: 28px 0;
@@ -1016,6 +1089,21 @@ select {
 
     .experience-description {
         font-size: 0.9rem;
+    }
+
+
+    /* About */
+
+    .about-layout {
+        gap: 40px;
+    }
+
+    .about-text {
+        font-size: 1.45rem;
+    }
+
+    .about-focus {
+        gap: 7px 16px;
     }
 }
 

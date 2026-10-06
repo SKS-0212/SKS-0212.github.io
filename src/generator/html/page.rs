@@ -1,3 +1,4 @@
+use crate::generator::html::about::render_about;
 use crate::model::portfolio::Portfolio;
 
 use super::diagnostics::render_diagnostics;
@@ -9,12 +10,15 @@ use super::experience::render_experience;
 pub fn render_portfolio(portfolio: &Portfolio) -> String {
     let name = escape_html(&portfolio.profile.name);
 
+    let hero_html = render_hero(&portfolio.profile);
+
     let project_html = render_projects(&portfolio.projects);
 
-    let diagnostic_html = render_diagnostics(portfolio);
-
-    let hero_html = render_hero(&portfolio.profile);
     let experience_html = render_experience(&portfolio.experience);
+
+    let about_html = render_about(&portfolio.profile);
+
+    let diagnostic_html = render_diagnostics(portfolio);
 
     format!(
         r#"<!DOCTYPE html>
@@ -33,6 +37,7 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
         {hero_html}
         {project_html}
         {experience_html}
+        {about_html}
         {diagnostic_html}
     </div>
 </body>
