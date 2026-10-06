@@ -1,7 +1,7 @@
 use crate::model::portfolio::Portfolio;
 
 use super::diagnostics::render_diagnostics;
-use super::projects::render_project;
+use super::projects::render_projects;
 use super::utils::escape_html;
 use super::hero::render_hero;
 use super::experience::render_experience;
@@ -9,13 +9,9 @@ use super::experience::render_experience;
 pub fn render_portfolio(portfolio: &Portfolio) -> String {
     let name = escape_html(&portfolio.profile.name);
 
-    let mut projects_html = String::new();
+    let project_html = render_projects(&portfolio.projects);
 
-    for project in &portfolio.projects {
-        let html = render_project(project);
-        projects_html.push_str(&html);
-    }
-    let diagnostic_html = render_diagnostics(&portfolio);
+    let diagnostic_html = render_diagnostics(portfolio);
 
     let hero_html = render_hero(&portfolio.profile);
     let experience_html = render_experience(&portfolio.experience);
@@ -35,20 +31,9 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
 <body>
     <div class="page">
         {hero_html}
-
-        <section class="projects" id="projects">
-            <div class="section-header">
-                <p class="section-label">Selected work</p>
-                <h2>Projects</h2>
-            </div>
-
-            <div class="project-grid">
-                {projects_html}
-            </div>
-
-            {diagnostic_html}
-        </section>
+        {project_html}
         {experience_html}
+        {diagnostic_html}
     </div>
 </body>
 </html>"#,

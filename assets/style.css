@@ -553,8 +553,6 @@ select {
 
 .experience {
     padding: 96px 0 120px;
-
-    border-top: 1px solid var(--border);
 }
 
 .experience-list {

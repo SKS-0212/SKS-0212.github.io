@@ -2,7 +2,35 @@ use crate::model::project::Project;
 
 use super::utils::escape_html;
 
-pub(super) fn render_project(project: &Project) -> String {
+
+pub(super) fn render_projects(projects: &[Project])->String{
+    if projects.is_empty(){
+        return  String::new();
+    }
+
+    let mut projects_html = String::new();
+
+    for project in projects{
+        let formatted_project = render_project(project);
+        projects_html.push_str(&formatted_project)
+    }
+    format!(
+        r#"
+<section class="projects" id="projects">
+    <div class="section-header">
+        <p class="section-label">Selected work</p>
+        <h2>Projects</h2>
+    </div>
+
+    <div class="project-grid">
+        {projects_html}
+    </div>
+</section>
+"#
+    )
+}
+
+ fn render_project(project: &Project) -> String {
 
     let name = escape_html(&project.name);
 
