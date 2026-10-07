@@ -1,6 +1,6 @@
-use crate::generator::html::about::render_about;
 use crate::model::portfolio::Portfolio;
 
+use super::about::render_about;
 use super::diagnostics::render_diagnostics;
 use super::projects::render_projects;
 use super::utils::escape_html;
@@ -13,13 +13,13 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
 
     let hero_html = render_hero(&portfolio.profile);
 
-    let project_html = render_projects(&portfolio.projects);
+    let projects_html = render_projects(&portfolio.projects);
 
     let experience_html = render_experience(&portfolio.experience);
 
     let about_html = render_about(&portfolio.profile);
 
-    let diagnostic_html = render_diagnostics(portfolio);
+    let diagnostic_html = render_diagnostics(&portfolio.diagnostics);
 
     let footer_html = render_footer(&portfolio.profile);
 
@@ -38,7 +38,7 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
 <body>
     <div class="page">
         {hero_html}
-        {project_html}
+        {projects_html}
         {experience_html}
         {about_html}
         {diagnostic_html}

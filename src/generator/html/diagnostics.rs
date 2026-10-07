@@ -1,16 +1,16 @@
-use crate::model::portfolio::Portfolio;
+use crate::model::portfolio::ProjectDiagnostic;
 
 use super::utils::escape_html;
 
 
-pub(super)  fn render_diagnostics(portfolio: &Portfolio) -> String {
-    if portfolio.diagnostics.is_empty() {
+pub(super)  fn render_diagnostics(diagnostics: &[ProjectDiagnostic]) -> String {
+    if diagnostics.is_empty() {
         return String::new();
     }
 
     let mut items = String::new();
 
-    for diagnostic in &portfolio.diagnostics {
+    for diagnostic in diagnostics {
         let project = escape_html(&diagnostic.project);
         let message = escape_html(&diagnostic.message);
 
