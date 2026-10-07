@@ -34,9 +34,6 @@ pub(super) fn render_projects(projects: &[Project])->String{
 
     let name = escape_html(&project.name);
 
-
-    let version  = escape_html(&project.version);
-
     let category_html = render_category(project);
 
     let description_html =render_description(project);

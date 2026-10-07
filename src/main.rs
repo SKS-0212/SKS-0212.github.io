@@ -21,15 +21,21 @@ fn main() {
     };
     let report = load_projects(&config.projects);
 
-    let portfolio = build_portfolio(config,report);
+    let build = build_portfolio(config, report);
 
-    println!("{:#?}",portfolio);
+    for diagnostic in &build.report.diagnostics{
+        eprintln!(
+            "Build warning [{}]: {}\n  {}",
+            diagnostic.source,
+            diagnostic.message,
+            diagnostic.detail
+        );    }
     
-    let html = render_portfolio(&portfolio);
+    let html = render_portfolio(&build.portfolio);
     match write_site(Path::new("dist"),&html){
         Ok(())=>{},
-        Err(error)=>{
-            println!("{:?}",error)
+        Err(error) => {
+            eprintln!("Failed to write site: {}", error);
         }
     };
     
