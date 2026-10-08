@@ -4,21 +4,60 @@ mod service;
 mod config;
 mod generator;
 
+use std::fmt:: Formatter;
+use std::io::Error;
 use crate::service::project::load_projects;
-use crate::config::loader::load_config;
+use crate::config::loader::{load_config, ConfigError};
 use std::path::Path;
 use crate::service::portfolio::build_portfolio;
 use crate::generator::html::render_portfolio;
 use crate::generator::writer::write_site;
+
+
 fn main() {
 
-  let config =  match load_config(Path::new("rustfolio.toml")) {
-        Ok(config) => config,
-        Err(error) => {
-            eprintln!("{}",error);
-            return;
-        },
-    };
+    match run() {
+        Ok(_)=>{},
+        Err(error)=>eprintln!("{}",error)
+    }
+}
+
+
+
+
+
+#[derive(Debug)]
+enum AppError{
+    Config(ConfigError),
+    Io(std::io::Error),
+}
+
+impl std::fmt::Display for AppError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            AppError::Config(error)=> write!(f,"{}",error),
+            AppError::Io(error)=>write!(f,"{}",error),
+        }
+    }
+}
+
+
+impl From<ConfigError> for AppError {
+    fn from(value: ConfigError) -> Self {
+        AppError::Config(value)
+    }
+}
+
+impl From<std::io::Error> for AppError {
+    fn from(value: Error) -> Self {
+        AppError::Io(value)
+    }
+}
+impl std::error::Error for AppError {}
+
+
+fn run ()->Result<(), AppError>{
+    let config =   load_config(Path::new("rustfolio.toml"))?;
     let report = load_projects(&config.projects);
 
     let build = build_portfolio(config, report);
@@ -30,15 +69,9 @@ fn main() {
             diagnostic.message,
             diagnostic.detail
         );    }
-    
+
     let html = render_portfolio(&build.portfolio);
-    match write_site(Path::new("dist"),&html){
-        Ok(())=>{},
-        Err(error) => {
-            eprintln!("Failed to write site: {}", error);
-        }
-    };
-    
+     write_site(Path::new("dist"),&html)?;
 
-
+    Ok(())
 }
