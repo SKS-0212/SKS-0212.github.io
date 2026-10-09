@@ -1,7 +1,8 @@
 use std::fs;
 use std::path::Path;
+use crate::generator::page::GeneratedPage;
 
-pub fn write_site(output_dir: &Path, html: &str, ) -> Result<(), std::io::Error> {
+pub fn write_site(output_dir: &Path, pages: &[GeneratedPage] ) -> Result<(), std::io::Error> {
 
     if output_dir.exists(){
         fs::remove_dir_all(output_dir)?;
@@ -9,15 +10,21 @@ pub fn write_site(output_dir: &Path, html: &str, ) -> Result<(), std::io::Error>
 
     fs::create_dir_all(output_dir)?;
 
-    let html_path = output_dir.join("index.html");
-    fs::write(html_path, html)?;
 
-    let assets_dir = output_dir.join("assets");
+    for page in pages{
+        let destination = output_dir.join(&page.path);
 
+        if let Some(dir ) = destination.parent(){
+            fs::create_dir_all(dir)?;
+        }
+        fs::write(&destination, &page.content)?;
+    }
+    
     copy_directory(
         Path::new("assets"),
-        &assets_dir,
+        &output_dir.join("assets"),
     )?;
+
 
     Ok(())
 }

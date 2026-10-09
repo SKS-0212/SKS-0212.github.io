@@ -10,7 +10,7 @@ use crate::service::project::load_projects;
 use crate::config::loader::{load_config, ConfigError};
 use std::path::Path;
 use crate::service::portfolio::build_portfolio;
-use crate::generator::html::render_portfolio;
+use crate::generator::site::generate_site;
 use crate::generator::writer::write_site;
 
 
@@ -70,8 +70,8 @@ fn run ()->Result<(), AppError>{
             diagnostic.detail
         );    }
 
-    let html = render_portfolio(&build.portfolio);
-     write_site(Path::new("dist"),&html)?;
+    let pages = generate_site(&build.portfolio);
+    write_site(Path::new("dist"), &pages)?;
 
     Ok(())
 }
