@@ -1358,3 +1358,414 @@ body::before {
         animation-iteration-count: 1 !important;
     }
 }
+
+
+/* =========================================================
+   Theme support — color changes only, original layout intact
+   ========================================================= */
+
+:root {
+    color-scheme: light;
+    --code-background: #f1f2f6;
+    --code-text: #242936;
+    --table-row: rgba(49, 87, 213, 0.025);
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --background: #111318;
+    --surface: #1b1e26;
+    --surface-soft: #222631;
+    --text-primary: #f1f2f6;
+    --text-secondary: #b0b5c2;
+    --text-muted: #8e96a8;
+    --accent: #8da8ff;
+    --accent-strong: #adc0ff;
+    --accent-soft: rgba(141, 168, 255, 0.13);
+    --accent-glow-core: rgba(90, 121, 240, 0.25);
+    --accent-glow: rgba(90, 121, 240, 0.12);
+    --accent-shadow: rgba(90, 121, 240, 0.18);
+    --accent-shadow-medium: rgba(90, 121, 240, 0.24);
+    --accent-shadow-strong: rgba(90, 121, 240, 0.3);
+    --border: #343947;
+    --border-strong: #4a5162;
+    --code-background: #1b202b;
+    --code-text: #dce4ff;
+    --table-row: rgba(141, 168, 255, 0.035);
+}
+
+/* Subtle, text-like toggle that fits the existing navigation. */
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 0;
+    border: 0;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 160ms ease;
+}
+
+.theme-toggle:hover { color: var(--accent); }
+.theme-toggle:focus-visible,
+.project-page a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 5px;
+    border-radius: 2px;
+}
+
+/* =========================================================
+   Project detail — same editorial design as the homepage
+   ========================================================= */
+
+.project-page {
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+.project-page main { min-width: 0; }
+
+.project-hero {
+    padding: 86px 0 92px;
+    border-bottom: 1px solid var(--border);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 64px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    transition: color 160ms ease, transform 160ms ease;
+}
+
+.back-link:hover {
+    color: var(--accent);
+    transform: translateX(-3px);
+}
+
+.project-page .hero-eyebrow { margin-bottom: 24px; }
+
+.project-page .hero-name {
+    max-width: 100%;
+    font-size: clamp(3.5rem, 8vw, 7.2rem);
+    overflow-wrap: anywhere;
+}
+
+.project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 36px;
+}
+
+.project-version,
+.project-featured,
+.project-page .project-category {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-secondary);
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: none;
+}
+
+.project-featured {
+    color: var(--accent-strong);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.project-page .hero-bio {
+    max-width: 700px;
+    margin-top: 32px;
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    line-height: 1.7;
+}
+
+.project-page .project-technologies { margin-top: 30px; }
+
+.project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 44px;
+}
+
+.project-actions a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 160ms ease, transform 160ms ease;
+}
+
+.project-actions a:hover {
+    color: var(--accent);
+    transform: translateY(-1px);
+}
+
+/* README follows the same width, typography and divider language. */
+.project-readme {
+    max-width: 900px;
+    padding: 90px 0 120px;
+}
+
+.project-readme .section-title {
+    margin: 0 0 40px;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+}
+
+.readme-content {
+    min-width: 0;
+    color: var(--text-secondary);
+    font-size: 0.97rem;
+    line-height: 1.85;
+    overflow-wrap: anywhere;
+}
+
+.readme-content > :first-child { margin-top: 0; }
+
+.readme-content h1,
+.readme-content h2,
+.readme-content h3,
+.readme-content h4,
+.readme-content h5,
+.readme-content h6 {
+    margin: 46px 0 16px;
+    color: var(--text-primary);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.035em;
+}
+
+.readme-content h1 { font-size: 2rem; }
+.readme-content h2 { font-size: 1.7rem; }
+.readme-content h3 { font-size: 1.4rem; }
+.readme-content h4 { font-size: 1.18rem; }
+.readme-content h5,
+.readme-content h6 { font-size: 1rem; }
+
+.readme-content p { margin: 18px 0; }
+.readme-content a {
+    color: var(--accent-strong);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+}
+.readme-content a:hover { color: var(--accent); }
+
+.readme-content ul,
+.readme-content ol { margin: 18px 0; padding-left: 26px; }
+.readme-content li { margin: 7px 0; padding-left: 4px; }
+.readme-content li::marker { color: var(--accent); }
+
+.readme-content blockquote {
+    margin: 28px 0;
+    padding: 2px 0 2px 22px;
+    border-left: 2px solid var(--accent);
+    color: var(--text-secondary);
+}
+
+.readme-content hr {
+    height: 1px;
+    margin: 42px 0;
+    border: 0;
+    background: var(--border);
+}
+
+.readme-content img {
+    max-width: 100%;
+    height: auto;
+    margin: 26px 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.readme-content code {
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: var(--surface-soft);
+    color: var(--code-text);
+    font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+    font-size: 0.88em;
+}
+
+.readme-content pre {
+    max-width: 100%;
+    margin: 28px 0;
+    padding: 22px 24px;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--code-background);
+    color: var(--code-text);
+    line-height: 1.65;
+    tab-size: 4;
+}
+
+.readme-content pre code {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 0.85rem;
+    white-space: pre;
+}
+
+.readme-content table {
+    display: block;
+    width: 100%;
+    margin: 28px 0;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.readme-content th,
+.readme-content td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+.readme-content th {
+    color: var(--text-primary);
+    font-weight: 600;
+    border-top: 1px solid var(--border);
+}
+
+.readme-content tr:nth-child(even) { background: var(--table-row); }
+.readme-content input[type="checkbox"] { accent-color: var(--accent); }
+
+/* Project footer: same simple horizontal rule and links as homepage. */
+.project-page .site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+.project-page .site-footer p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+.project-page .site-footer a {
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    transition: color 160ms ease;
+}
+.project-page .site-footer a:hover { color: var(--accent); }
+
+@media (max-width: 700px) {
+    .project-hero { padding: 64px 0 76px; }
+    .back-link { margin-bottom: 46px; }
+    .project-page .hero-name { font-size: clamp(3rem, 13vw, 5rem); }
+    .project-readme { padding: 72px 0 88px; }
+    .project-actions { margin-top: 34px; }
+}
+
+@media (max-width: 480px) {
+    .project-hero { padding: 52px 0 64px; }
+    .project-page .hero-name { font-size: clamp(2.7rem, 14vw, 4rem); }
+    .readme-content pre { padding: 16px; }
+    .theme-toggle { font-size: 0.8rem; }
+}
+
+
+/* =========================================================
+   Compact project navigation + icon-only theme switch
+   These rules do not alter the homepage layout.
+   ========================================================= */
+.project-page .project-nav-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    min-width: 0;
+}
+.project-page .project-back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 24px;
+    height: 32px;
+    padding: 0;
+
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+
+    color: var(--text-secondary);
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+            color 160ms ease,
+            transform 160ms ease;
+}
+.project-page .project-back-button:hover {
+    color: var(--accent);
+    transform: translateX(-3px);
+}
+
+.project-page.project-back-button svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+/* Both pages use the same icon control without changing the original nav spacing. */
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+.theme-toggle:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+.theme-toggle svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.theme-toggle:focus-visible,
+.project-back-button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+}

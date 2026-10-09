@@ -7,6 +7,22 @@
     <link rel="stylesheet" href="assets/style.css">
 
     <title>Sachin Kumar Singh</title>
+
+
+        <!-- Initialize theme before rendering the page -->
+    <script>
+        try {
+            const savedTheme = localStorage.getItem("rustfolio-theme");
+
+            if (savedTheme === "light" || savedTheme === "dark") {
+                document.documentElement.dataset.theme = savedTheme;
+            } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                document.documentElement.dataset.theme = "dark";
+            }
+        } catch (_) {
+            // Continue using the default theme if storage is unavailable.
+        }
+    </script>
 </head>
 
 <body>
@@ -17,6 +33,13 @@
 
     <nav class="site-nav">
         <a class="nav-link" href="https://github.com/example" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a class="nav-link" href="https://linkedin.com/in/example" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+  <button
+    type="button"
+    class="theme-toggle"
+    data-theme-toggle
+    aria-label="Toggle color theme"
+    aria-pressed="false"
+></button>
     </nav>
 </header>
 
@@ -96,9 +119,9 @@
             <h3 class="project-title">
                 <a
                     class="project-title-link"
-                    href="projects/b/"
-                    aria-label="View b project">
-                    b
+                    href="projects/Rustfolio/"
+                    aria-label="View Rustfolio project">
+                    Rustfolio
                 </a>
             </h3>
         </div>

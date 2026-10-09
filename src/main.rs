@@ -9,12 +9,39 @@ use std::io::Error;
 use crate::service::project::load_projects;
 use crate::config::loader::{load_config, ConfigError};
 use std::path::Path;
+use crate::generator::paths::SitePaths;
 use crate::service::portfolio::build_portfolio;
 use crate::generator::site::generate_site;
 use crate::generator::writer::write_site;
 
 
 fn main() {
+
+    // let home = SitePaths::new(0);
+    // println!("{:?}",home.root_prefix());
+    //
+    // let project = SitePaths::new(2);
+    // println!("{:?}",project.root_prefix());
+    // let project = SitePaths::new(1);
+    // println!("{:?}",project.root_prefix());
+    //
+    // let nested = SitePaths::new(3);
+    // println!("{:?}",nested.root_prefix());
+
+    let home = SitePaths::from_page_path(
+        Path::new("index.html")
+    );
+    assert_eq!(home.root_prefix(), "./");
+
+    let project = SitePaths::from_page_path(
+        Path::new("projects/rsh/index.html")
+    );
+    assert_eq!(project.root_prefix(), "../../");
+
+    let nested = SitePaths::from_page_path(
+        Path::new("projects/systems/rsh/index.html")
+    );
+    assert_eq!(nested.root_prefix(), "../../../");
 
     match run() {
         Ok(_)=>{},

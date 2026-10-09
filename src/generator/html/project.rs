@@ -1,8 +1,9 @@
+use crate::generator::paths::SitePaths;
 use crate::model::project::Project;
 
 use super::utils::{escape_html, render_markdown};
 
-pub fn render_project(project: &Project) -> String {
+pub fn render_project(project: &Project, paths: &SitePaths) -> String {
     let name = escape_html(&project.name);
     let version = escape_html(&project.version);
 
@@ -54,53 +55,104 @@ pub fn render_project(project: &Project) -> String {
 
     let readme_html = render_markdown(&project.readme);
 
+
+
+    let home_url = escape_html(&paths.home_url());
+    let projects_url = escape_html(&paths.projects_url());
+    let stylesheet_url = escape_html(&paths.asset_url("style.css"));
+    let script_url = escape_html(&paths.asset_url("main.js"));
+
+
     format!(
-        r#"<!DOCTYPE html>
+        r##"<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
 
-    <link rel="stylesheet" href="../../assets/style.css">
-
     <title>{name} — Project</title>
+
+    <!-- Initialize theme before rendering the page -->
+    <script>
+        try {{
+            const savedTheme = localStorage.getItem("rustfolio-theme");
+
+            if (savedTheme === "light" || savedTheme === "dark") {{
+                document.documentElement.dataset.theme = savedTheme;
+            }} else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {{
+                document.documentElement.dataset.theme = "dark";
+            }}
+        }} catch (_) {{
+            // Continue using the default theme if storage is unavailable.
+        }}
+    </script>
+
+    <link rel="stylesheet" href="{stylesheet_url}">
 </head>
+
 <body>
     <div class="page project-page">
 
-        <header class="site-header">
-            <a class="brand" href="../../"
-               onclick="window.location.replace(this.href); return false;">
-                Rustfolio
-            </a>
+        <!-- Header -->
+   <header class="site-header">
+    <div class="project-nav-start">
+        <a
+            href="{projects_url}"
+            class="project-back-button"
+            aria-label="Back to projects"
+            title="Back to projects"
+            onclick="window.location.replace(this.href); return false;"
+        >
+        <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+    >
+        <path d="m15 18-6-6 6-6" />
+    </svg>
+        </a>
 
-            <nav class="site-nav">
-                <a
-                    class="nav-link"
-                    href="../../#projects"
-                    onclick="window.location.replace(this.href); return false;">
-                    All Projects ↗
-                </a>
-            </nav>
-        </header>
+        <a class="brand" href="{home_url}">
+            Rustfolio
+        </a>
+    </div>
+
+    <nav class="site-nav">
+        <button
+            type="button"
+            class="theme-toggle"
+            data-theme-toggle
+            aria-label="Toggle color theme"
+            aria-pressed="false"
+        ></button>
+    </nav>
+</header>
 
         <main>
+
+            <!-- Project hero -->
             <section class="project-hero">
 
-                <a
-                    class="back-link"
-                    href="../../#projects"
-                    onclick="window.location.replace(this.href); return false;">
-                    ← Back to projects
-                </a>
+                <p class="hero-eyebrow">
+                    Project Details
+                </p>
 
-                <p class="hero-eyebrow">Project Details</p>
-
-                <h1 class="hero-name">{name}</h1>
+                <h1 class="hero-name">
+                    {name}
+                </h1>
 
                 <div class="project-meta">
-                    <span class="project-version">v{version}</span>
+                    <span class="project-version">
+                        v{version}
+                    </span>
+
                     {featured_html}
                     {category_html}
                 </div>
@@ -119,28 +171,40 @@ pub fn render_project(project: &Project) -> String {
 
             </section>
 
+            <!-- Project documentation -->
             <section class="project-readme">
-                <h2 class="section-title">About this project</h2>
+
+                <h2 class="section-title">
+                    About this project
+                </h2>
 
                 <article class="readme-content">
                     {readme_html}
                 </article>
+
             </section>
+
         </main>
 
+        <!-- Footer -->
         <footer class="site-footer">
+
             <p>Built with Rustfolio.</p>
+
             <a
-                href="../../#projects"
-                onclick="window.location.replace(this.href); return false;">
+                href="{projects_url}"
+                onclick="window.location.replace(this.href); return false;"
+            >
                 Explore other projects ↑
             </a>
+
         </footer>
 
     </div>
 
-    <script src="../../assets/main.js"></script>
+    <script src="{script_url}"></script>
 </body>
-</html>"#
+</html>"##
     )
+
 }

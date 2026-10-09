@@ -31,6 +31,22 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
     <link rel="stylesheet" href="assets/style.css">
 
     <title>{name}</title>
+
+
+        <!-- Initialize theme before rendering the page -->
+    <script>
+        try {{
+            const savedTheme = localStorage.getItem("rustfolio-theme");
+
+            if (savedTheme === "light" || savedTheme === "dark") {{
+                document.documentElement.dataset.theme = savedTheme;
+            }} else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {{
+                document.documentElement.dataset.theme = "dark";
+            }}
+        }} catch (_) {{
+            // Continue using the default theme if storage is unavailable.
+        }}
+    </script>
 </head>
 
 <body>

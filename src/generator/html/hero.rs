@@ -26,6 +26,13 @@ pub(super) fn render_hero(profile: &Profile) -> String {
 
     <nav class="site-nav">
         {}
+  <button
+    type="button"
+    class="theme-toggle"
+    data-theme-toggle
+    aria-label="Toggle color theme"
+    aria-pressed="false"
+></button>
     </nav>
 </header>
 
