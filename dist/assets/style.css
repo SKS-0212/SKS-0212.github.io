@@ -531,6 +531,15 @@ body::before {
 }
 
 
+.project-title-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    cursor: pointer;
+}
+
+
 /* =========================================================
    Project Description
    ========================================================= */

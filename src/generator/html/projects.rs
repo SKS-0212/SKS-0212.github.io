@@ -30,31 +30,34 @@ pub(super) fn render_projects(projects: &[Project])->String{
     )
 }
 
- fn render_project(project: &Project) -> String {
 
+fn render_project(project: &Project) -> String {
     let name = escape_html(&project.name);
+    let project_href = escape_html(&format!("projects/{}/", project.name));
 
     let category_html = render_category(project);
-
-    let description_html =render_description(project);
-
+    let description_html = render_description(project);
     let technologies_html = render_technologies(project);
-
     let repository_html = render_repository(project);
-
 
     format!(
         r#"
 <article class="project-item">
-
     <div class="project-top">
         <div class="project-identity">
             {category_html}
 
-            <h3 class="project-title">{name}</h3>
+            <h3 class="project-title">
+                <a
+                    class="project-title-link"
+                    href="{project_href}"
+                    aria-label="View {name} project">
+                    {name}
+                </a>
+            </h3>
         </div>
 
-        <span class="project-arrow">↗</span>
+        <span class="project-arrow" aria-hidden="true">↗</span>
     </div>
 
     {description_html}
@@ -66,11 +69,11 @@ pub(super) fn render_projects(projects: &[Project])->String{
 
         {repository_html}
     </div>
-
 </article>
 "#
     )
 }
+
 
 
 fn render_technologies(project: &Project)->String{
