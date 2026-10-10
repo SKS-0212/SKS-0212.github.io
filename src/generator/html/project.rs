@@ -189,14 +189,8 @@ pub fn render_project(project: &Project, paths: &SitePaths) -> String {
         <!-- Footer -->
         <footer class="site-footer">
 
-            <p>Built with Rustfolio.</p>
+            <p>Built with Rust.</p>
 
-            <a
-                href="{projects_url}"
-                onclick="window.location.replace(this.href); return false;"
-            >
-                Explore other projects ↑
-            </a>
 
         </footer>
 
