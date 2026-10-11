@@ -4,3 +4,4 @@ pub mod page;
 pub mod site;
 pub mod paths;
 pub mod slug;
+pub mod error;

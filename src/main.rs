@@ -9,6 +9,7 @@ use std::io::Error;
 use crate::service::project::load_projects;
 use crate::config::loader::{load_config, ConfigError};
 use std::path::{Path, PathBuf};
+use crate::generator::error::SiteGenerationError;
 use crate::service::portfolio::build_portfolio;
 use crate::generator::site::generate_site;
 use crate::generator::writer::write_site;
@@ -36,6 +37,7 @@ fn dummy_runs(){
 enum AppError{
     Config(ConfigError),
     Io(std::io::Error),
+    SiteGenerationError(SiteGenerationError),
 }
 
 impl std::fmt::Display for AppError {
@@ -43,7 +45,14 @@ impl std::fmt::Display for AppError {
         match self {
             AppError::Config(error)=> write!(f,"{}",error),
             AppError::Io(error)=>write!(f,"{}",error),
+            AppError::SiteGenerationError(error)=>write!(f,"{}",error),
         }
+    }
+}
+
+impl From<SiteGenerationError> for AppError {
+    fn from(value: SiteGenerationError) -> Self {
+        AppError::SiteGenerationError(value)
     }
 }
 
@@ -76,7 +85,7 @@ fn run ()->Result<(), AppError>{
             diagnostic.detail
         );    }
 
-    let pages = generate_site(&build.portfolio);
+    let pages = generate_site(&build.portfolio)?;
     write_site(Path::new("dist"), &pages)?;
 
     Ok(())
