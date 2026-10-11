@@ -223,5 +223,30 @@ mod tests{
         );
     }
 
+    #[test]
+    fn homepage_links_to_normalized_project_path() {
+        let mut portfolio = sample_portfolio();
+
+        portfolio.projects.push(sample_project("Rust Shell"));
+
+        let pages = generate_site(&portfolio)
+            .expect("Site generation should succeed");
+
+        let homepage = &pages[0];
+        let project_page = &pages[1];
+
+        assert!(
+            homepage.content.contains(
+                "href=\"projects/rust-shell/\""
+            ),
+            "Homepage does not link to the normalized project URL"
+        );
+
+        assert_eq!(
+            project_page.path,
+            PathBuf::from("projects/rust-shell/index.html")
+        );
+    }
+
 
 }

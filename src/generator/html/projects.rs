@@ -1,4 +1,5 @@
 use crate::model::project::Project;
+use crate::generator::slug::slugify;
 
 use super::utils::escape_html;
 
@@ -33,8 +34,12 @@ pub(super) fn render_projects(projects: &[Project])->String{
 
 fn render_project(project: &Project) -> String {
     let name = escape_html(&project.name);
-    let project_href = escape_html(&format!("projects/{}/", project.name));
 
+    let slug = slugify(&project.name);
+
+    let project_href = escape_html(
+        &format!("projects/{slug}/")
+    );
     let category_html = render_category(project);
     let description_html = render_description(project);
     let technologies_html = render_technologies(project);
