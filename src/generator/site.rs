@@ -6,7 +6,7 @@ use crate::generator::paths::SitePaths;
 use crate::model::portfolio::Portfolio;
 
 use std::collections::HashSet;
-use crate::generator::slug::is_valid_slug;
+use crate::generator::slug::{is_valid_slug, slugify};
 
 pub fn generate_site(portfolio: &Portfolio) ->Result<Vec<GeneratedPage>, SiteGenerationError>{
 
@@ -20,18 +20,19 @@ pub fn generate_site(portfolio: &Portfolio) ->Result<Vec<GeneratedPage>, SiteGen
     };
     pages.push(generated_portfolio);
 
+
     let mut slugs = HashSet::new();
 
         for project in &portfolio.projects {
+            let slug = slugify(&project.name);
 
-
-            if !is_valid_slug(&project.name){
+            if !is_valid_slug(&slug){
                 return Err(
                     SiteGenerationError::InvalidSlug(project.name.clone())
                 );
             }
 
-            if !slugs.insert(&project.name){
+            if !slugs.insert(slug.clone()){
                 return  Err(
                     SiteGenerationError::DuplicateSlug(project.name.clone())
                 );
@@ -39,7 +40,7 @@ pub fn generate_site(portfolio: &Portfolio) ->Result<Vec<GeneratedPage>, SiteGen
 
 
             let page_path = PathBuf::from("projects")
-                .join(&project.name)
+                .join(&slug)
                 .join("index.html");
 
             let paths = SitePaths::from_page_path(&page_path);
@@ -180,7 +181,7 @@ mod tests{
     fn rejects_invalid_project_slug() {
         let mut portfolio = sample_portfolio();
 
-        portfolio.projects.push(sample_project("../outside"));
+        portfolio.projects.push(sample_project("---"));
 
         let result = generate_site(&portfolio);
 
@@ -195,15 +196,31 @@ mod tests{
     fn rejects_duplicate_project_slugs() {
         let mut portfolio = sample_portfolio();
 
-        portfolio.projects.push(sample_project("rsh"));
-        portfolio.projects.push(sample_project("rsh"));
+        portfolio.projects.push(sample_project("Rust Shell"));
+        portfolio.projects.push(sample_project("rust-shell"));
 
         let result = generate_site(&portfolio);
 
         assert!(matches!(
         result,
-        Err(SiteGenerationError::DuplicateSlug(_))
+        Err(SiteGenerationError::DuplicateSlug(slug))
+            if slug == "rust-shell"
     ));
+    }
+
+    #[test]
+    fn normalizes_project_name_in_output_path() {
+        let mut portfolio = sample_portfolio();
+
+        portfolio.projects.push(sample_project("Rust Shell"));
+
+        let pages = generate_site(&portfolio)
+            .expect("Site generation should succeed");
+
+        assert_eq!(
+            pages[1].path,
+            PathBuf::from("projects/rust-shell/index.html")
+        );
     }
 
 

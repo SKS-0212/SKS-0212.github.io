@@ -18,6 +18,24 @@ pub fn is_valid_slug(slug: &str)->bool{
 
 }
 
+pub fn slugify(name: &str)-> String{
+    name.trim()
+        .to_ascii_lowercase()
+        .chars()
+        .map(|ch|{
+            if ch.is_ascii_lowercase() || ch.is_ascii_digit(){
+                ch
+            }else{
+                '-'
+            }
+        })
+        .collect::<String>()
+        .split('-')
+        .filter(|part|!part.is_empty())
+        .collect::<Vec<_>>()
+        .join("-")
+}
+
 
 #[cfg(test)]
 mod tests{
@@ -37,5 +55,15 @@ mod tests{
         assert!(!is_valid_slug("my project"));
         assert!(!is_valid_slug(""));
         assert!(!is_valid_slug("-rust"));
+    }
+
+    #[test]
+    fn converts_project_names_to_slugs() {
+        assert_eq!(slugify("Rust Shell"), "rust-shell");
+        assert_eq!(slugify("HexView"), "hexview");
+        assert_eq!(slugify("my---project"), "my-project");
+        assert_eq!(slugify("  Rust 2026  "), "rust-2026");
+        assert_eq!(slugify("../outside"), "outside");
+        assert_eq!(slugify("---"), "");
     }
 }

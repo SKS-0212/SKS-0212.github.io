@@ -8,7 +8,7 @@ use std::fmt:: Formatter;
 use std::io::Error;
 use crate::service::project::load_projects;
 use crate::config::loader::{load_config, ConfigError};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use crate::generator::error::SiteGenerationError;
 use crate::service::portfolio::build_portfolio;
 use crate::generator::site::generate_site;
@@ -16,22 +16,11 @@ use crate::generator::writer::write_site;
 
 
 fn main() {
-    dummy_runs();
     match run() {
         Ok(_)=>{},
         Err(error)=>eprintln!("{}",error)
     }
 }
-
-fn dummy_runs(){
-    let path = PathBuf::from("projects")
-        .join("../outside")
-        .join("index.html");
-    println!("{}",path.display());
-}
-
-
-
 
 #[derive(Debug)]
 enum AppError{
