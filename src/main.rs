@@ -1,8 +1,11 @@
+extern crate core;
+
 mod model;
 mod scanner;
 mod service;
 mod config;
 mod generator;
+mod github;
 
 use std::fmt:: Formatter;
 use std::io::Error;
