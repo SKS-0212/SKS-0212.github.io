@@ -26,6 +26,13 @@ pub struct GithubRepositoryPage {
     pub has_next_page: bool,
 }
 
+
+#[derive(Debug, serde::Deserialize)]
+pub struct GithubFileContent {
+    pub encoding: String,
+    pub content: String,
+}
+
 #[cfg(test)]
 mod tests{
     use super::*;

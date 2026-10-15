@@ -1,7 +1,8 @@
 use reqwest::blocking::Client;
 use reqwest::header::{ACCEPT,LINK, USER_AGENT};
 use reqwest::StatusCode;
-use crate::github::model::{GithubRepository,GithubRepositoryPage};
+use crate::github::content::decode_github_file;
+use crate::github::model::{GithubFileContent, GithubRepository, GithubRepositoryPage};
 use crate::github::error::GithubError;
 
 pub struct GithubClient {
@@ -93,6 +94,56 @@ impl GithubClient {
         collect_repository_pages(|page| {
             self.fetch_repositories_page(username, page)
         })
+    }
+
+
+    pub fn fetch_file(
+        &self,
+        owner: &str,
+        repo: &str,
+        path: &str
+    )->Result<Option<String>, GithubError>{
+        let url = format!(
+            "https://api.github.com/repos/{owner}/{repo}/contents/{path}"
+        );
+
+        let response = self.client
+            .get(&url)
+            .header(USER_AGENT, "rustfolio")
+            .header(ACCEPT, "application/vnd.github+json")
+            .send()
+            .map_err(GithubError::Network)?;
+
+        if response.status() == StatusCode::NOT_FOUND {
+            return Ok(None);
+        }
+
+        if response.status() == StatusCode::TOO_MANY_REQUESTS {
+            return Err(GithubError::RateLimited);
+        }
+
+        if response.status() == StatusCode::FORBIDDEN {
+            let remaining = response
+                .headers()
+                .get("x-ratelimit-remaining")
+                .and_then(|value| value.to_str().ok());
+
+            if remaining == Some("0") {
+                return Err(GithubError::RateLimited);
+            }
+        }
+
+        let response = response
+            .error_for_status()
+            .map_err(GithubError::Api)?;
+
+        let file = response
+            .json::<GithubFileContent>()
+            .map_err(GithubError::Decode)?;
+
+        let content = decode_github_file(file)?;
+
+        Ok(Some(content))
     }
 
 
@@ -375,5 +426,36 @@ mod tests {
         assert!(matches!(result, Err(GithubError::RateLimited)));
 
         assert_eq!(requested_pages, vec![1, 2]);
+    }
+
+    #[test]
+    #[ignore = "Requires GitHub API access"]
+    fn fetch_live_cargo_toml() {
+        let client = GithubClient::new();
+
+        let content = client
+            .fetch_file("rust-lang", "rustlings", "Cargo.toml")
+            .expect("GitHub request failed")
+            .expect("Cargo.toml not found");
+
+        assert!(content.contains("[package]"));
+
+        println!("Cargo.toml:\n{}", content);
+    }
+
+    #[test]
+    #[ignore = "Requires GitHub API access"]
+    fn fetch_missing_repository_file() {
+        let client = GithubClient::new();
+
+        let result = client
+            .fetch_file(
+                "rust-lang",
+                "rustlings",
+                "this-file-does-not-exist-rustfolio.txt",
+            )
+            .expect("GitHub request failed");
+
+        assert!(result.is_none());
     }
 }
