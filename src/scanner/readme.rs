@@ -55,9 +55,12 @@ impl std::error::Error for ReadmeScanError {}
 
 pub fn read_readme(project_path: &Path) -> Result<ReadmeData, ReadmeScanError> {
     let path = project_path.join("README.md");
-
     let contents = fs::read_to_string(path)?;
-    let remaining = contents.strip_prefix("---").ok_or(ReadmeScanError::MissingFrontMatter)?;
+    parse_readme(&contents)
+}
+
+pub fn parse_readme(content: &str)->Result<ReadmeData,ReadmeScanError>{
+    let remaining = content.strip_prefix("---").ok_or(ReadmeScanError::MissingFrontMatter)?;
     let (metadata, markdown) = remaining.split_once("---").ok_or(ReadmeScanError::MissingClosingDelimiter)?;
     let data = serde_yaml_ng::from_str::<ReadmeMetadata>(metadata)?;
     let readme_data = ReadmeData {

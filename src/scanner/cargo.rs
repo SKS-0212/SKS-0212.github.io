@@ -51,9 +51,46 @@ pub fn read_cargo(project_path: &Path) -> Result<CargoManifest, CargoScanError> 
 
     let content = fs::read_to_string(path)?;
 
+    parse_cargo(&content)
+}
 
-    let manifest = toml::from_str::<CargoManifest>(&content)?;
+pub fn parse_cargo(content: &str)->Result<CargoManifest, CargoScanError>{
+    let manifest = toml::from_str::<CargoManifest>(content)
+        .map_err(CargoScanError::Toml)?;
 
     Ok(manifest)
+}
+
+
+#[cfg(test)]
+mod tests{
+    use super::*;
+
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        #[test]
+        fn parses_cargo_manifest_from_string() {
+            let content = r#"
+            [package]
+            name = "rustfolio"
+            version = "0.1.0"
+            edition = "2024"
+            description = "Static portfolio generator"
+        "#;
+
+            let manifest = parse_cargo(content)
+                .expect("Valid Cargo manifest");
+
+            assert_eq!(manifest.package.name, "rustfolio");
+            assert_eq!(manifest.package.version, "0.1.0");
+            assert_eq!(
+                manifest.package.description.as_deref(),
+                Some("Static portfolio generator")
+            );
+        }
+    }
 }
 
