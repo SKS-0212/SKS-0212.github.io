@@ -69,3 +69,32 @@ pub fn parse_readme(content: &str)->Result<ReadmeData,ReadmeScanError>{
     };
     Ok(readme_data)
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parses_readme_from_string() {
+        let content = r#"---
+category: Systems Programming
+featured: true
+---
+# Rust Shell
+
+A shell written in Rust.
+"#;
+
+        let result = parse_readme(content)
+            .expect("README should parse successfully");
+
+        assert_eq!(
+            result.metadata.category.as_deref(),
+            Some("Systems Programming")
+        );
+
+        assert!(result.metadata.featured);
+        assert!(result.content.contains("# Rust Shell"));
+    }
+}
