@@ -1,4 +1,4 @@
-pub mod model;
 pub mod client;
-pub mod error;
 pub mod content;
+pub mod error;
+pub mod model;

@@ -1,8 +1,8 @@
-use std::path::PathBuf;
 use serde::Deserialize;
+use std::path::PathBuf;
 
-#[derive(Debug,Deserialize)]
-pub struct RustfolioConfig{
+#[derive(Debug, Deserialize)]
+pub struct RustfolioConfig {
     pub projects: Vec<PathBuf>,
     pub profile: ProfileConfig,
 
@@ -10,8 +10,8 @@ pub struct RustfolioConfig{
     pub experience: Vec<ExperienceConfig>,
 }
 
-#[derive(Debug,Deserialize)]
-pub struct  ProfileConfig{
+#[derive(Debug, Deserialize)]
+pub struct ProfileConfig {
     pub name: String,
     pub headline: String,
     pub bio: String,
@@ -26,13 +26,13 @@ pub struct  ProfileConfig{
 }
 
 #[derive(Debug, Deserialize)]
-pub struct LinkConfig{
+pub struct LinkConfig {
     pub label: String,
     pub url: String,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct ExperienceConfig{
+pub struct ExperienceConfig {
     pub company: String,
     pub role: String,
     pub start: String,

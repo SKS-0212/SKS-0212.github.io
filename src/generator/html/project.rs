@@ -55,13 +55,10 @@ pub fn render_project(project: &Project, paths: &SitePaths) -> String {
 
     let readme_html = render_markdown(&project.readme);
 
-
-
     let home_url = escape_html(&paths.home_url());
     let projects_url = escape_html(&paths.projects_url());
     let stylesheet_url = escape_html(&paths.asset_url("style.css"));
     let script_url = escape_html(&paths.asset_url("main.js"));
-
 
     format!(
         r##"<!DOCTYPE html>
@@ -200,5 +197,4 @@ pub fn render_project(project: &Project, paths: &SitePaths) -> String {
 </body>
 </html>"##
     )
-
 }

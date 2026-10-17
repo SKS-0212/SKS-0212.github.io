@@ -1,8 +1,6 @@
-
-
 #[derive(Debug)]
-pub struct Project{
-    pub name:String,
+pub struct Project {
+    pub name: String,
     pub description: Option<String>,
     pub version: String,
     pub repository: Option<String>,

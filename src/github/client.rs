@@ -1,9 +1,9 @@
-use reqwest::blocking::Client;
-use reqwest::header::{ACCEPT,LINK, USER_AGENT};
-use reqwest::StatusCode;
 use crate::github::content::decode_github_file;
-use crate::github::model::{GithubFileContent, GithubRepository, GithubRepositoryPage};
 use crate::github::error::GithubError;
+use crate::github::model::{GithubFileContent, GithubRepository, GithubRepositoryPage};
+use reqwest::StatusCode;
+use reqwest::blocking::Client;
+use reqwest::header::{ACCEPT, LINK, USER_AGENT};
 
 pub struct GithubClient {
     client: Client,
@@ -16,17 +16,15 @@ impl GithubClient {
         }
     }
 
-
     pub fn fetch_repositories_page(
         &self,
         username: &str,
         page: u32,
     ) -> Result<GithubRepositoryPage, GithubError> {
-        let url = format!(
-            "https://api.github.com/users/{username}/repos"
-        );
+        let url = format!("https://api.github.com/users/{username}/repos");
 
-        let response = self.client
+        let response = self
+            .client
             .get(&url)
             .header(USER_AGENT, "rustfolio")
             .header(ACCEPT, "application/vnd.github+json")
@@ -42,9 +40,7 @@ impl GithubClient {
 
         // Handle nonexistent GitHub users.
         if status == StatusCode::NOT_FOUND {
-            return Err(GithubError::UserNotFound(
-                username.to_string()
-            ));
+            return Err(GithubError::UserNotFound(username.to_string()));
         }
 
         // Handle HTTP 429.
@@ -65,9 +61,7 @@ impl GithubClient {
         }
 
         // Handle other HTTP errors.
-        let response = response
-            .error_for_status()
-            .map_err(GithubError::Api)?;
+        let response = response.error_for_status().map_err(GithubError::Api)?;
 
         let has_next = response
             .headers()
@@ -91,23 +85,19 @@ impl GithubClient {
         &self,
         username: &str,
     ) -> Result<Vec<GithubRepository>, GithubError> {
-        collect_repository_pages(|page| {
-            self.fetch_repositories_page(username, page)
-        })
+        collect_repository_pages(|page| self.fetch_repositories_page(username, page))
     }
-
 
     pub fn fetch_file(
         &self,
         owner: &str,
         repo: &str,
-        path: &str
-    )->Result<Option<String>, GithubError>{
-        let url = format!(
-            "https://api.github.com/repos/{owner}/{repo}/contents/{path}"
-        );
+        path: &str,
+    ) -> Result<Option<String>, GithubError> {
+        let url = format!("https://api.github.com/repos/{owner}/{repo}/contents/{path}");
 
-        let response = self.client
+        let response = self
+            .client
             .get(&url)
             .header(USER_AGENT, "rustfolio")
             .header(ACCEPT, "application/vnd.github+json")
@@ -133,9 +123,7 @@ impl GithubClient {
             }
         }
 
-        let response = response
-            .error_for_status()
-            .map_err(GithubError::Api)?;
+        let response = response.error_for_status().map_err(GithubError::Api)?;
 
         let file = response
             .json::<GithubFileContent>()
@@ -145,18 +133,13 @@ impl GithubClient {
 
         Ok(Some(content))
     }
-
-
 }
-
 
 fn has_next_page(link_header: &str) -> bool {
     // Step 1: Split the header into individual links.
     for link in link_header.split(',') {
-
         // Step 2: Split each link into its parameters.
         for parameter in link.split(';') {
-
             // Step 3: Remove leading and trailing whitespace.
             let parameter = parameter.trim();
 
@@ -171,10 +154,7 @@ fn has_next_page(link_header: &str) -> bool {
     false
 }
 
-
-fn collect_repository_pages<F>(
-    mut fetch_page: F,
-) -> Result<Vec<GithubRepository>, GithubError>
+fn collect_repository_pages<F>(mut fetch_page: F) -> Result<Vec<GithubRepository>, GithubError>
 where
     F: FnMut(u32) -> Result<GithubRepositoryPage, GithubError>,
 {
@@ -192,31 +172,27 @@ where
             break;
         }
 
-        page = page
-            .checked_add(1)
-            .ok_or(GithubError::PaginationOverflow)?;
+        page = page.checked_add(1).ok_or(GithubError::PaginationOverflow)?;
     }
 
     Ok(all_repositories)
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
-
     fn mock_repository(name: &str) -> GithubRepository {
         serde_json::from_value(serde_json::json!({
-        "name": name,
-        "full_name": format!("test/{name}"),
-        "html_url": format!("https://github.com/test/{name}"),
-        "description": null,
-        "language": "Rust",
-        "private": false,
-        "fork": false
-    }))
-            .expect("Valid mock GitHub repository")
+            "name": name,
+            "full_name": format!("test/{name}"),
+            "html_url": format!("https://github.com/test/{name}"),
+            "description": null,
+            "language": "Rust",
+            "private": false,
+            "fork": false
+        }))
+        .expect("Valid mock GitHub repository")
     }
 
     #[test]
@@ -234,9 +210,7 @@ mod tests {
         for repository in &page.repositories {
             println!(
                 "{} | {:?} | {}",
-                repository.name,
-                repository.language,
-                repository.html_url
+                repository.name, repository.language, repository.html_url
             );
         }
 
@@ -256,10 +230,8 @@ mod tests {
     fn fetch_nonexistent_github_user() {
         let client = GithubClient::new();
 
-        let result = client.fetch_repositories_page(
-            "rustfolio-this-user-should-not-exist-987654321",
-            1,
-        );
+        let result =
+            client.fetch_repositories_page("rustfolio-this-user-should-not-exist-987654321", 1);
 
         assert!(
             matches!(result, Err(GithubError::UserNotFound(_))),
@@ -281,15 +253,9 @@ mod tests {
             .fetch_repositories_page("octocat", 2)
             .expect("Failed to fetch page 2");
 
-        println!(
-            "Page 1 repositories: {}",
-            page_1.repositories.len()
-        );
+        println!("Page 1 repositories: {}", page_1.repositories.len());
 
-        println!(
-            "Page 2 repositories: {}",
-            page_2.repositories.len()
-        );
+        println!("Page 2 repositories: {}", page_2.repositories.len());
 
         println!("Page 1 has next: {}", page_1.has_next_page);
         println!("Page 2 has next: {}", page_2.has_next_page);
@@ -297,7 +263,6 @@ mod tests {
         assert!(page_1.repositories.len() <= 100);
         assert!(page_2.repositories.len() <= 100);
     }
-
 
     #[test]
     #[ignore = "Requires GitHub API access"]
@@ -316,7 +281,6 @@ mod tests {
 
         assert!(repositories.len() >= 1);
     }
-
 
     #[test]
     fn detects_next_page() {
@@ -352,7 +316,6 @@ mod tests {
         assert!(result.repositories.len() <= 100);
     }
 
-
     #[test]
     fn collects_multiple_repository_pages() {
         let mut requested_pages = Vec::new();
@@ -362,23 +325,15 @@ mod tests {
 
             let result = match page {
                 1 => GithubRepositoryPage {
-                    repositories: vec![
-                        mock_repository("repo-1"),
-                        mock_repository("repo-2"),
-                    ],
+                    repositories: vec![mock_repository("repo-1"), mock_repository("repo-2")],
                     has_next_page: true,
                 },
                 2 => GithubRepositoryPage {
-                    repositories: vec![
-                        mock_repository("repo-3"),
-                        mock_repository("repo-4"),
-                    ],
+                    repositories: vec![mock_repository("repo-3"), mock_repository("repo-4")],
                     has_next_page: true,
                 },
                 3 => GithubRepositoryPage {
-                    repositories: vec![
-                        mock_repository("repo-5"),
-                    ],
+                    repositories: vec![mock_repository("repo-5")],
                     has_next_page: false,
                 },
                 _ => panic!("Unexpected page requested: {page}"),
@@ -386,7 +341,7 @@ mod tests {
 
             Ok(result)
         })
-            .expect("Pagination should succeed");
+        .expect("Pagination should succeed");
 
         assert_eq!(repositories.len(), 5);
         assert_eq!(requested_pages, vec![1, 2, 3]);
@@ -411,9 +366,7 @@ mod tests {
 
             match page {
                 1 => Ok(GithubRepositoryPage {
-                    repositories: vec![
-                        mock_repository("repo-1"),
-                    ],
+                    repositories: vec![mock_repository("repo-1")],
                     has_next_page: true,
                 }),
 

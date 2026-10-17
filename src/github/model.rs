@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
-pub struct GithubRepository{
+pub struct GithubRepository {
     pub name: String,
     pub full_name: String,
     pub html_url: String,
@@ -11,12 +11,9 @@ pub struct GithubRepository{
     pub fork: bool,
 }
 
-
 impl GithubRepository {
-    pub fn is_rust_project(&self)->bool{
-        !self.private &&
-            !self.fork &&
-            self.language.as_deref() == Some("Rust")
+    pub fn is_rust_project(&self) -> bool {
+        !self.private && !self.fork && self.language.as_deref() == Some("Rust")
     }
 }
 
@@ -26,7 +23,6 @@ pub struct GithubRepositoryPage {
     pub has_next_page: bool,
 }
 
-
 #[derive(Debug, serde::Deserialize)]
 pub struct GithubFileContent {
     pub encoding: String,
@@ -34,13 +30,11 @@ pub struct GithubFileContent {
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::*;
 
-
-
     #[test]
-    fn github_data_deserialization(){
+    fn github_data_deserialization() {
         let json = r#"{
             "name": "rsh",
             "full_name": "example/rsh",
@@ -61,7 +55,7 @@ mod tests{
         assert_eq!(repository.private, false);
         assert_eq!(repository.fork, false);
     }
-    
+
     #[test]
     fn github_nullable_fields_deserialization() {
         let json = r#"
@@ -77,14 +71,12 @@ mod tests{
     "#;
 
         let repository: GithubRepository =
-            serde_json::from_str(json)
-                .expect("Valid GitHub repository JSON");
+            serde_json::from_str(json).expect("Valid GitHub repository JSON");
 
         assert_eq!(repository.name, "hexview");
         assert_eq!(repository.description, None);
         assert_eq!(repository.language, None);
     }
-
 
     #[test]
     fn filters_public_rust_repositories() {
@@ -119,6 +111,4 @@ mod tests{
         repository.fork = true;
         assert!(!repository.is_rust_project());
     }
-
-
 }

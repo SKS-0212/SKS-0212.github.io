@@ -1,13 +1,12 @@
-use crate::model::profile::Profile;
 use super::utils::escape_html;
-
+use crate::model::profile::Profile;
 
 pub(super) fn render_hero(profile: &Profile) -> String {
     // Escape:
     // profile.name
     let name = escape_html(&profile.name);
     // profile.headline
-    let  headline = escape_html(&profile.headline);
+    let headline = escape_html(&profile.headline);
     // profile.bio
     let bio = escape_html(&profile.bio);
 
@@ -77,10 +76,7 @@ fn render_skills(profile: &Profile) -> String {
     for skill in &profile.skills {
         let escaped_skill = escape_html(skill);
 
-        let formatted_skill = format!(
-            r#"<span class="hero-skill">{}</span>"#,
-            escaped_skill
-        );
+        let formatted_skill = format!(r#"<span class="hero-skill">{}</span>"#, escaped_skill);
 
         skills_html.push_str(&formatted_skill);
     }
@@ -88,10 +84,10 @@ fn render_skills(profile: &Profile) -> String {
     skills_html
 }
 
-fn render_links(profile: &Profile) ->String{
+fn render_links(profile: &Profile) -> String {
     let mut links_html = String::new();
 
-    for link in &profile.links{
+    for link in &profile.links {
         let escaped_label = escape_html(&link.label);
         let escaped_url = escape_html(&link.url);
 
@@ -106,18 +102,15 @@ fn render_links(profile: &Profile) ->String{
     links_html
 }
 
-fn render_location(profile: &Profile)->String{
-
+fn render_location(profile: &Profile) -> String {
     match &profile.location {
-        Some(location)=>{
+        Some(location) => {
             let escaped_location = escape_html(location);
             format!(
                 r#"<span class="hero-location">Based in {}</span>"#,
                 escaped_location
             )
-        },
-        None=>String::new()
+        }
+        None => String::new(),
     }
-
-
 }

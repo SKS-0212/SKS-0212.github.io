@@ -1,17 +1,16 @@
-use crate::model::project::Project;
 use crate::generator::slug::slugify;
+use crate::model::project::Project;
 
 use super::utils::escape_html;
 
-
-pub(super) fn render_projects(projects: &[Project])->String{
-    if projects.is_empty(){
-        return  String::new();
+pub(super) fn render_projects(projects: &[Project]) -> String {
+    if projects.is_empty() {
+        return String::new();
     }
 
     let mut projects_html = String::new();
 
-    for project in projects{
+    for project in projects {
         let formatted_project = render_project(project);
         projects_html.push_str(&formatted_project)
     }
@@ -31,15 +30,12 @@ pub(super) fn render_projects(projects: &[Project])->String{
     )
 }
 
-
 fn render_project(project: &Project) -> String {
     let name = escape_html(&project.name);
 
     let slug = slugify(&project.name);
 
-    let project_href = escape_html(
-        &format!("projects/{slug}/")
-    );
+    let project_href = escape_html(&format!("projects/{slug}/"));
     let category_html = render_category(project);
     let description_html = render_description(project);
     let technologies_html = render_technologies(project);
@@ -79,17 +75,16 @@ fn render_project(project: &Project) -> String {
     )
 }
 
-
-
-fn render_technologies(project: &Project)->String{
+fn render_technologies(project: &Project) -> String {
     let mut technologies_html = String::new();
 
-    for technology in &project.technologies{
+    for technology in &project.technologies {
         let escaped_technology = escape_html(technology);
 
-        let formated_technology= format!(
+        let formated_technology = format!(
             r#"<span class="project-technology">{}</span>"#,
-            escaped_technology);
+            escaped_technology
+        );
 
         technologies_html.push_str(&formated_technology);
     }
@@ -97,7 +92,7 @@ fn render_technologies(project: &Project)->String{
     technologies_html
 }
 
-fn render_category(project: &Project)->String{
+fn render_category(project: &Project) -> String {
     match &project.category {
         Some(category) => {
             let escaped_category = escape_html(category);
@@ -107,11 +102,11 @@ fn render_category(project: &Project)->String{
                 escaped_category
             )
         }
-        None=>String::new()
+        None => String::new(),
     }
 }
 
-fn render_description(project: &Project)->String{
+fn render_description(project: &Project) -> String {
     match &project.description {
         Some(description) => {
             let escaped_description = escape_html(description);
@@ -121,11 +116,11 @@ fn render_description(project: &Project)->String{
                 escaped_description
             )
         }
-        None=>String::new()
+        None => String::new(),
     }
 }
 
-fn render_repository(project: &Project)->String{
+fn render_repository(project: &Project) -> String {
     match &project.repository {
         Some(repository) => {
             let escaped_repository = escape_html(repository);
@@ -141,6 +136,6 @@ fn render_repository(project: &Project)->String{
                 escaped_repository
             )
         }
-        None=>String::new()
+        None => String::new(),
     }
 }

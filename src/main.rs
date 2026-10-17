@@ -1,32 +1,31 @@
 extern crate core;
 
-mod model;
-mod scanner;
-mod service;
 mod config;
 mod generator;
 mod github;
+mod model;
+mod scanner;
+mod service;
 
-use std::fmt:: Formatter;
-use std::io::Error;
-use crate::service::project::load_projects;
-use crate::config::loader::{load_config, ConfigError};
-use std::path::Path;
+use crate::config::loader::{ConfigError, load_config};
 use crate::generator::error::SiteGenerationError;
-use crate::service::portfolio::build_portfolio;
 use crate::generator::site::generate_site;
 use crate::generator::writer::write_site;
-
+use crate::service::portfolio::build_portfolio;
+use crate::service::project::load_projects;
+use std::fmt::Formatter;
+use std::io::Error;
+use std::path::Path;
 
 fn main() {
     match run() {
-        Ok(_)=>{},
-        Err(error)=>eprintln!("{}",error)
+        Ok(_) => {}
+        Err(error) => eprintln!("{}", error),
     }
 }
 
 #[derive(Debug)]
-enum AppError{
+enum AppError {
     Config(ConfigError),
     Io(std::io::Error),
     SiteGenerationError(SiteGenerationError),
@@ -35,9 +34,9 @@ enum AppError{
 impl std::fmt::Display for AppError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            AppError::Config(error)=> write!(f,"{}",error),
-            AppError::Io(error)=>write!(f,"{}",error),
-            AppError::SiteGenerationError(error)=>write!(f,"{}",error),
+            AppError::Config(error) => write!(f, "{}", error),
+            AppError::Io(error) => write!(f, "{}", error),
+            AppError::SiteGenerationError(error) => write!(f, "{}", error),
         }
     }
 }
@@ -47,7 +46,6 @@ impl From<SiteGenerationError> for AppError {
         AppError::SiteGenerationError(value)
     }
 }
-
 
 impl From<ConfigError> for AppError {
     fn from(value: ConfigError) -> Self {
@@ -62,20 +60,18 @@ impl From<std::io::Error> for AppError {
 }
 impl std::error::Error for AppError {}
 
-
-fn run ()->Result<(), AppError>{
-    let config =   load_config(Path::new("rustfolio.toml"))?;
+fn run() -> Result<(), AppError> {
+    let config = load_config(Path::new("rustfolio.toml"))?;
     let report = load_projects(&config.projects);
 
     let build = build_portfolio(config, report);
 
-    for diagnostic in &build.report.diagnostics{
+    for diagnostic in &build.report.diagnostics {
         eprintln!(
             "Build warning [{}]: {}\n  {}",
-            diagnostic.source,
-            diagnostic.message,
-            diagnostic.detail
-        );    }
+            diagnostic.source, diagnostic.message, diagnostic.detail
+        );
+    }
 
     let pages = generate_site(&build.portfolio)?;
     write_site(Path::new("dist"), &pages)?;

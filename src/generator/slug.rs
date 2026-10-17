@@ -1,55 +1,47 @@
-
-pub fn is_valid_slug(slug: &str)->bool{
+pub fn is_valid_slug(slug: &str) -> bool {
     if slug.is_empty() {
         return false;
     }
 
-
-    if slug.starts_with('-') || slug.ends_with('-'){
+    if slug.starts_with('-') || slug.ends_with('-') {
         return false;
     }
 
-     slug.chars().all(
-        |ch|
-            ch.is_ascii_lowercase()
-            || ch.is_ascii_digit()
-            || ch == '-'
-        )
-
+    slug.chars()
+        .all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || ch == '-')
 }
 
-pub fn slugify(name: &str)-> String{
+pub fn slugify(name: &str) -> String {
     name.trim()
         .to_ascii_lowercase()
         .chars()
-        .map(|ch|{
-            if ch.is_ascii_lowercase() || ch.is_ascii_digit(){
+        .map(|ch| {
+            if ch.is_ascii_lowercase() || ch.is_ascii_digit() {
                 ch
-            }else{
+            } else {
                 '-'
             }
         })
         .collect::<String>()
         .split('-')
-        .filter(|part|!part.is_empty())
+        .filter(|part| !part.is_empty())
         .collect::<Vec<_>>()
         .join("-")
 }
 
-
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::*;
 
     #[test]
-    fn accepts_valid_slugs(){
+    fn accepts_valid_slugs() {
         assert!(is_valid_slug("rsh"));
         assert!(is_valid_slug("hex-view"));
         assert!(is_valid_slug("rust2026"));
     }
 
     #[test]
-    fn rejects_unsafe_slugs(){
+    fn rejects_unsafe_slugs() {
         assert!(!is_valid_slug("../outside"));
         assert!(!is_valid_slug("hello/world"));
         assert!(!is_valid_slug("my project"));

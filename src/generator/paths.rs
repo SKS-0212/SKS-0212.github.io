@@ -30,52 +30,40 @@ impl SitePaths {
         format!("{}assets/{asset}", self.root_prefix())
     }
 
-    pub fn from_page_path(page_path: &Path)-> Self {
+    pub fn from_page_path(page_path: &Path) -> Self {
         let parent = page_path.parent().unwrap_or_else(|| Path::new(""));
         let depth = parent.components().count();
         Self::new(depth)
     }
 }
 
-
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::*;
     use std::path::Path;
 
     #[test]
-    fn home_has_zero_depth(){
-        let paths = SitePaths::from_page_path(
-            Path::new("index.html")
-        );
-        assert_eq!(paths.root_prefix(),"./")
+    fn home_has_zero_depth() {
+        let paths = SitePaths::from_page_path(Path::new("index.html"));
+        assert_eq!(paths.root_prefix(), "./")
     }
 
     #[test]
-    fn project_depth(){
-        let paths = SitePaths::from_page_path(
-            Path::new("projects/rsh/index.html")
-        );
-        assert_eq!(paths.root_prefix(),"../../")
+    fn project_depth() {
+        let paths = SitePaths::from_page_path(Path::new("projects/rsh/index.html"));
+        assert_eq!(paths.root_prefix(), "../../")
     }
 
     #[test]
-    fn nested_project_path(){
-        let paths = SitePaths::from_page_path(
-            Path::new("projects/system/rsh/index.html")
-        );
-        assert_eq!(paths.root_prefix(),"../../../");
+    fn nested_project_path() {
+        let paths = SitePaths::from_page_path(Path::new("projects/system/rsh/index.html"));
+        assert_eq!(paths.root_prefix(), "../../../");
     }
 
     #[test]
-    fn assert_url(){
-        let paths = SitePaths::from_page_path(
-            Path::new("projects/rsh/index.html")
-        );
+    fn assert_url() {
+        let paths = SitePaths::from_page_path(Path::new("projects/rsh/index.html"));
 
-        assert_eq!(
-            paths.asset_url("style.css"),
-            "../../assets/style.css"
-        );
+        assert_eq!(paths.asset_url("style.css"), "../../assets/style.css");
     }
 }

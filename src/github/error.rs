@@ -1,8 +1,8 @@
 use core::fmt;
-use std::fmt:: Formatter;
+use std::fmt::Formatter;
 
 #[derive(Debug)]
-pub enum GithubError{
+pub enum GithubError {
     UserNotFound(String),
     RateLimited,
     Network(reqwest::Error),
@@ -35,23 +35,20 @@ impl fmt::Display for GithubError {
             GithubError::PaginationOverflow => {
                 write!(f, "GitHub pagination page number overflow")
             }
-            GithubError::Base64Decode(error)=>{
-                write!(f,"Failed to decode Github Base64 content: {}",error)
+            GithubError::Base64Decode(error) => {
+                write!(f, "Failed to decode Github Base64 content: {}", error)
             }
-            GithubError::InvalidUtf8(error)=>{
-                write!(f,"Github file contains invalid UTF-8: {}",error)
+            GithubError::InvalidUtf8(error) => {
+                write!(f, "Github file contains invalid UTF-8: {}", error)
             }
-            GithubError::UnsupportedEncoding(encoding)=>{
-                write!(f,"Unsupported Github file encoding: {}",encoding)
+            GithubError::UnsupportedEncoding(encoding) => {
+                write!(f, "Unsupported Github file encoding: {}", encoding)
             }
-
         }
     }
 }
 
-impl std::error::Error for GithubError{}
-
-
+impl std::error::Error for GithubError {}
 
 #[cfg(test)]
 mod tests {
@@ -71,9 +68,6 @@ mod tests {
     fn rate_limit_has_readable_message() {
         let error = GithubError::RateLimited;
 
-        assert_eq!(
-            error.to_string(),
-            "GitHub API rate limit exceeded"
-        );
+        assert_eq!(error.to_string(), "GitHub API rate limit exceeded");
     }
 }

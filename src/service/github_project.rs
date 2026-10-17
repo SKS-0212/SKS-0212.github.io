@@ -3,35 +3,34 @@ use crate::github::error::GithubError;
 use crate::github::model::GithubRepository;
 use crate::model::project::Project;
 use crate::scanner::cargo::CargoScanError;
-use crate::scanner::readme::ReadmeScanError;
 use crate::scanner::cargo::parse_cargo;
+use crate::scanner::readme::ReadmeScanError;
 use crate::scanner::readme::parse_readme;
 
 #[derive(Debug)]
-pub enum GithubProjectError{
+pub enum GithubProjectError {
     GithubRequestError(GithubError),
     CargoParsingError(CargoScanError),
     ReadmeParsingError(ReadmeScanError),
     InvalidRepositoryName(String),
 }
 
-impl From<GithubError> for GithubProjectError{
+impl From<GithubError> for GithubProjectError {
     fn from(value: GithubError) -> Self {
         GithubProjectError::GithubRequestError(value)
     }
 }
-impl From<CargoScanError> for GithubProjectError{
+impl From<CargoScanError> for GithubProjectError {
     fn from(value: CargoScanError) -> Self {
         GithubProjectError::CargoParsingError(value)
     }
 }
 
-impl From<ReadmeScanError> for GithubProjectError{
+impl From<ReadmeScanError> for GithubProjectError {
     fn from(value: ReadmeScanError) -> Self {
         GithubProjectError::ReadmeParsingError(value)
     }
 }
-
 
 impl std::fmt::Display for GithubProjectError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -39,7 +38,9 @@ impl std::fmt::Display for GithubProjectError {
             Self::GithubRequestError(error) => write!(f, "GitHub request failed: {error}"),
             Self::CargoParsingError(error) => write!(f, "Cargo parsing failed: {error}"),
             Self::ReadmeParsingError(error) => write!(f, "README parsing failed: {error}"),
-            Self::InvalidRepositoryName(name) => write!(f, "Invalid GitHub repository name: {name}")
+            Self::InvalidRepositoryName(name) => {
+                write!(f, "Invalid GitHub repository name: {name}")
+            }
         }
     }
 }
@@ -48,15 +49,13 @@ impl std::error::Error for GithubProjectError {}
 
 pub fn load_github_project(
     client: &GithubClient,
-    repository: &GithubRepository
-)->Result<Option<Project>, GithubProjectError>{
+    repository: &GithubRepository,
+) -> Result<Option<Project>, GithubProjectError> {
     let (owner, repo) = repository
         .full_name
         .split_once('/')
         .filter(|(owner, repo)| !owner.is_empty() && !repo.is_empty() && !repo.contains('/'))
-        .ok_or_else(|| {
-            GithubProjectError::InvalidRepositoryName(repository.full_name.clone())
-        })?;
+        .ok_or_else(|| GithubProjectError::InvalidRepositoryName(repository.full_name.clone()))?;
 
     let cargo_content = client.fetch_file(owner, repo, "Cargo.toml")?;
 
@@ -64,25 +63,16 @@ pub fn load_github_project(
         return Ok(None);
     };
 
-
     let readme_content = client.fetch_file(owner, repo, "README.md")?;
 
     let Some(readme_content) = readme_content else {
         return Ok(None);
     };
 
-    let cargo = parse_cargo(&cargo_content)?;
-    let readme = parse_readme(&readme_content)?;
-
-    let project = build_github_project(
-        repository,
-        &cargo_content,
-        &readme_content,
-    )?;
+    let project = build_github_project(repository, &cargo_content, &readme_content)?;
 
     Ok(Some(project))
 }
-
 
 pub fn build_github_project(
     repository: &GithubRepository,
@@ -143,11 +133,7 @@ A shell built with Rust.
 "#;
 
         // Act: Build a Project from the provided content
-        let project = build_github_project(
-            &repository,
-            cargo_content,
-            readme_content,
-        )
+        let project = build_github_project(&repository, cargo_content, readme_content)
             .expect("Project should be constructed");
 
         // Assert: Verify the generated Project
@@ -159,10 +145,7 @@ A shell built with Rust.
             Some("A Unix-like shell written in Rust")
         );
 
-        assert_eq!(
-            project.category.as_deref(),
-            Some("Systems Programming")
-        );
+        assert_eq!(project.category.as_deref(), Some("Systems Programming"));
 
         assert!(project.featured);
 
@@ -199,16 +182,12 @@ featured: true
 # Rust Shell
 "#;
 
-        let result = build_github_project(
-            &repository,
-            cargo_content,
-            readme_content,
-        );
+        let result = build_github_project(&repository, cargo_content, readme_content);
 
         assert!(matches!(
-        result,
-        Err(GithubProjectError::CargoParsingError(_))
-    ));
+            result,
+            Err(GithubProjectError::CargoParsingError(_))
+        ));
     }
 
     #[test]
@@ -236,17 +215,13 @@ edition = "2024"
 A shell written in Rust without YAML front matter.
 "#;
 
-        let result = build_github_project(
-            &repository,
-            cargo_content,
-            readme_content,
-        );
+        let result = build_github_project(&repository, cargo_content, readme_content);
 
         assert!(matches!(
-        result,
-        Err(GithubProjectError::ReadmeParsingError(
-            ReadmeScanError::MissingFrontMatter
-        ))
-    ));
+            result,
+            Err(GithubProjectError::ReadmeParsingError(
+                ReadmeScanError::MissingFrontMatter
+            ))
+        ));
     }
 }

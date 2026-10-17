@@ -18,18 +18,16 @@ fn render_location(profile: &Profile) -> String {
         None => String::new(),
     }
 }
-fn render_focus(profile: &Profile)->String{
-    if profile.skills.is_empty(){
-        return  String::new();
+fn render_focus(profile: &Profile) -> String {
+    if profile.skills.is_empty() {
+        return String::new();
     }
 
     let mut skills_html = String::new();
 
-    for skill in &profile.skills{
+    for skill in &profile.skills {
         let escaped_focus = escape_html(skill);
-        let formatted_focus = format!(
-            r#"<span>{escaped_focus}</span>"#
-        );
+        let formatted_focus = format!(r#"<span>{escaped_focus}</span>"#);
 
         skills_html.push_str(&formatted_focus);
     }
@@ -46,7 +44,7 @@ fn render_focus(profile: &Profile)->String{
     )
 }
 
-pub(super) fn render_about(profile: &Profile)->String{
+pub(super) fn render_about(profile: &Profile) -> String {
     let bio = escape_html(&profile.bio);
     let location_html = render_location(profile);
     let focus_html = render_focus(profile);
@@ -72,5 +70,4 @@ pub(super) fn render_about(profile: &Profile)->String{
     </section>
     "#
     )
-
 }

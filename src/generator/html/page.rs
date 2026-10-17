@@ -1,11 +1,11 @@
 use crate::model::portfolio::Portfolio;
 
 use super::about::render_about;
-use super::projects::render_projects;
-use super::utils::escape_html;
-use super::hero::render_hero;
 use super::experience::render_experience;
 use super::footer::render_footer;
+use super::hero::render_hero;
+use super::projects::render_projects;
+use super::utils::escape_html;
 
 pub fn render_portfolio(portfolio: &Portfolio) -> String {
     let name = escape_html(&portfolio.profile.name);
@@ -17,7 +17,6 @@ pub fn render_portfolio(portfolio: &Portfolio) -> String {
     let experience_html = render_experience(&portfolio.experience);
 
     let about_html = render_about(&portfolio.profile);
-
 
     let footer_html = render_footer(&portfolio.profile);
 
