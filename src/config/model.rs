@@ -70,7 +70,6 @@ bio = "Building Rust projects."
         assert!(config.experience.is_empty());
     }
 
-
     #[test]
     fn parses_config_with_github() {
         let content = r#"
@@ -85,15 +84,10 @@ bio = "Building Rust projects."
 username = "rust-developer"
 "#;
 
-        let config: RustfolioConfig =
-            toml::from_str(content).expect("Valid configuration");
+        let config: RustfolioConfig = toml::from_str(content).expect("Valid configuration");
 
-        assert_eq!(
-            config.github.as_ref().unwrap().username,
-            "rust-developer"
-        );
+        assert_eq!(config.github.as_ref().unwrap().username, "rust-developer");
     }
-
 
     #[test]
     fn rejects_github_config_without_username() {
