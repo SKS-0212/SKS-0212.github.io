@@ -6,7 +6,9 @@ use crate::model::link::Link;
 use crate::model::portfolio::Portfolio;
 use crate::model::profile::Profile;
 use crate::model::project::Project;
+use crate::service::github_discovery::GithubDiscoveryReport;
 use crate::service::project::ProjectLoadReport;
+use crate::service::project::{ProjectFailure, ProjectLoadError};
 use std::collections::HashSet;
 
 impl From<LinkConfig> for Link {
@@ -104,6 +106,30 @@ pub fn merge_projects(local: Vec<Project>, remote: Vec<Project>) -> Vec<Project>
     merged
 }
 
+pub fn combine_project_reports(
+    local: ProjectLoadReport,
+    github: GithubDiscoveryReport,
+) -> (ProjectLoadReport, Vec<BuildDiagnostic>) {
+    let projects = merge_projects(local.projects, github.projects);
+
+    let diagnostics: Vec<BuildDiagnostic> = github
+        .diagnostics
+        .into_iter()
+        .map(|diagnostic| BuildDiagnostic {
+            source: diagnostic.repository,
+            message: "GitHub project could not be loaded.".to_string(),
+            detail: diagnostic.message,
+        })
+        .collect();
+
+    let combined = ProjectLoadReport {
+        projects,
+        failures: local.failures,
+    };
+
+    (combined, diagnostics)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -168,5 +194,92 @@ mod tests {
         let merged = merge_projects(local, vec![]);
 
         assert_eq!(merged.len(), 2);
+    }
+
+    #[test]
+    fn combines_local_and_github_project_reports() {
+        let local = ProjectLoadReport {
+            projects: vec![make_project("rsh"), make_project("hexview")],
+            failures: vec![],
+        };
+
+        let github = GithubDiscoveryReport {
+            projects: vec![make_project("rsh"), make_project("rustfolio")],
+            diagnostics: vec![],
+        };
+
+        let (combined, diagnostics) = combine_project_reports(local, github);
+
+        assert_eq!(combined.projects.len(), 3);
+
+        assert_eq!(combined.projects[0].name, "rsh");
+        assert_eq!(combined.projects[1].name, "hexview");
+        assert_eq!(combined.projects[2].name, "rustfolio");
+
+        assert!(combined.failures.is_empty());
+        assert!(diagnostics.is_empty());
+    }
+
+    #[test]
+    fn preserves_github_diagnostics() {
+        use crate::service::github_discovery::GithubProjectDiagnostic;
+
+        let local = ProjectLoadReport {
+            projects: vec![],
+            failures: vec![],
+        };
+
+        let github = GithubDiscoveryReport {
+            projects: vec![],
+            diagnostics: vec![GithubProjectDiagnostic {
+                repository: "developer/broken-project".to_string(),
+                message: "Invalid Cargo.toml".to_string(),
+            }],
+        };
+
+        let (combined, diagnostics) = combine_project_reports(local, github);
+
+        assert!(combined.projects.is_empty());
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0].source, "developer/broken-project");
+        assert_eq!(diagnostics[0].detail, "Invalid Cargo.toml");
+    }
+
+    #[test]
+    fn preserves_local_project_failures() {
+        use crate::scanner::cargo::CargoScanError;
+        use crate::service::project::{ProjectFailure, ProjectLoadError};
+        use std::io::{Error, ErrorKind};
+        use std::path::PathBuf;
+
+        let local = ProjectLoadReport {
+            projects: vec![make_project("rsh")],
+            failures: vec![ProjectFailure {
+                path: PathBuf::from("../broken-project"),
+                error: ProjectLoadError::Cargo(CargoScanError::Io(Error::new(
+                    ErrorKind::NotFound,
+                    "Cargo.toml not found",
+                ))),
+            }],
+        };
+
+        let github = GithubDiscoveryReport {
+            projects: vec![make_project("rustfolio")],
+            diagnostics: vec![],
+        };
+
+        let (combined, diagnostics) = combine_project_reports(local, github);
+
+        assert_eq!(combined.projects.len(), 2);
+        assert_eq!(combined.projects[0].name, "rsh");
+        assert_eq!(combined.projects[1].name, "rustfolio");
+
+        assert_eq!(combined.failures.len(), 1);
+        assert_eq!(
+            combined.failures[0].path,
+            PathBuf::from("../broken-project")
+        );
+
+        assert!(diagnostics.is_empty());
     }
 }
