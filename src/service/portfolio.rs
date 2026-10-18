@@ -8,7 +8,6 @@ use crate::model::profile::Profile;
 use crate::model::project::Project;
 use crate::service::github_discovery::GithubDiscoveryReport;
 use crate::service::project::ProjectLoadReport;
-use crate::service::project::{ProjectFailure, ProjectLoadError};
 use std::collections::HashSet;
 
 impl From<LinkConfig> for Link {
