@@ -11,14 +11,11 @@ use crate::config::loader::{ConfigError, load_config};
 use crate::generator::error::SiteGenerationError;
 use crate::generator::site::generate_site;
 use crate::generator::writer::write_site;
-use crate::service::project::load_projects;
 use crate::github::client::GithubClient;
 use crate::github::error::GithubError;
 use crate::service::github_discovery::discover_github_projects;
-use crate::service::portfolio::{
-    build_portfolio,
-    combine_project_reports,
-};
+use crate::service::portfolio::{build_portfolio, combine_project_reports};
+use crate::service::project::load_projects;
 use std::fmt::Formatter;
 use std::io::Error;
 use std::path::Path;
@@ -88,11 +85,9 @@ fn run() -> Result<(), AppError> {
     if let Some(github_config) = &config.github {
         let client = GithubClient::new();
 
-        let github_report =
-            discover_github_projects(&client, &github_config.username)?;
+        let github_report = discover_github_projects(&client, &github_config.username)?;
 
-        let (combined, diagnostics) =
-            combine_project_reports(report, github_report);
+        let (combined, diagnostics) = combine_project_reports(report, github_report);
 
         report = combined;
         github_diagnostics = diagnostics;
@@ -108,9 +103,7 @@ fn run() -> Result<(), AppError> {
     for diagnostic in &build.report.diagnostics {
         eprintln!(
             "Build warning [{}]: {}\n  {}",
-            diagnostic.source,
-            diagnostic.message,
-            diagnostic.detail
+            diagnostic.source, diagnostic.message, diagnostic.detail
         );
     }
 

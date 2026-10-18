@@ -182,12 +182,13 @@ featured: true
 # Rust Shell
 "#;
 
-        let result = build_github_project(&repository, cargo_content, readme_content);
+        let result =
+            build_github_project(&repository, cargo_content, readme_content);
 
         assert!(matches!(
-            result,
-            Err(GithubProjectError::CargoParsingError(_))
-        ));
+        result,
+        Err(GithubProjectError::CargoParsingError(_))
+    ));
     }
 
     #[test]
@@ -209,19 +210,64 @@ version = "0.1.0"
 edition = "2024"
 "#;
 
-        let readme_content = r#"
-# Rust Shell
-
-A shell written in Rust without YAML front matter.
+        // Invalid README: opening frontmatter without a closing delimiter.
+        let readme_content = r#"---
+category: Systems Programming
+featured: true
 "#;
 
-        let result = build_github_project(&repository, cargo_content, readme_content);
+        let result =
+            build_github_project(&repository, cargo_content, readme_content);
 
         assert!(matches!(
-            result,
-            Err(GithubProjectError::ReadmeParsingError(
-                ReadmeScanError::MissingFrontMatter
-            ))
-        ));
+        result,
+        Err(GithubProjectError::ReadmeParsingError(
+            ReadmeScanError::MissingClosingDelimiter
+        ))
+    ));
+    }
+
+
+
+    #[test]
+    fn builds_github_project_without_readme_frontmatter() {
+        let repository = GithubRepository {
+            name: "hexview".to_string(),
+            full_name: "example/hexview".to_string(),
+            html_url: "https://github.com/example/hexview".to_string(),
+            description: Some("A hexadecimal file viewer".to_string()),
+            language: Some("Rust".to_string()),
+            private: false,
+            fork: false,
+        };
+
+        let cargo_content = r#"
+[package]
+name = "hexview"
+version = "0.1.0"
+edition = "2024"
+description = "A hexadecimal file viewer"
+"#;
+
+        let readme_content = "# Hexview\n\nA hexadecimal file viewer written in Rust.";
+
+        let result = build_github_project(
+            &repository,
+            cargo_content,
+            readme_content,
+        )
+            .expect("GitHub project should load without README frontmatter");
+
+        assert_eq!(result.name, "hexview");
+        assert_eq!(result.version, "0.1.0");
+        assert_eq!(result.readme, readme_content);
+        assert_eq!(result.category, None);
+        assert!(!result.featured);
+        assert!(result.technologies.is_empty());
+
+        assert_eq!(
+            result.repository.as_deref(),
+            Some("https://github.com/example/hexview")
+        );
     }
 }

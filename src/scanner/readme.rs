@@ -10,7 +10,7 @@ pub struct ReadmeData {
     pub content: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Default)]
 pub struct ReadmeMetadata {
     pub category: Option<String>,
 
@@ -62,6 +62,12 @@ pub fn read_readme(project_path: &Path) -> Result<ReadmeData, ReadmeScanError> {
 }
 
 pub fn parse_readme(content: &str) -> Result<ReadmeData, ReadmeScanError> {
+    if !content.starts_with("---") {
+        return Ok(ReadmeData {
+            metadata: ReadmeMetadata::default(),
+            content: content.to_string(),
+        });
+    }
     let remaining = content
         .strip_prefix("---")
         .ok_or(ReadmeScanError::MissingFrontMatter)?;
@@ -100,5 +106,26 @@ A shell written in Rust.
 
         assert!(result.metadata.featured);
         assert!(result.content.contains("# Rust Shell"));
+    }
+
+    #[test]
+    fn parses_readme_without_frontmatter() {
+        let input = "# Hexview\n\nA hexadecimal file viewer.";
+
+        let result = parse_readme(input).expect("Normal README should be accepted");
+
+        assert_eq!(result.content, input);
+        assert_eq!(result.metadata.category, None);
+        assert!(!result.metadata.featured);
+        assert!(result.metadata.technologies.is_empty());
+    }
+
+    #[test]
+    fn rejects_unclosed_frontmatter() {
+        let input = "---\ncategory: Systems Programming\n";
+
+        let result = parse_readme(input);
+
+        assert!(result.is_err());
     }
 }
