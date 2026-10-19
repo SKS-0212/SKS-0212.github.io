@@ -182,13 +182,12 @@ featured: true
 # Rust Shell
 "#;
 
-        let result =
-            build_github_project(&repository, cargo_content, readme_content);
+        let result = build_github_project(&repository, cargo_content, readme_content);
 
         assert!(matches!(
-        result,
-        Err(GithubProjectError::CargoParsingError(_))
-    ));
+            result,
+            Err(GithubProjectError::CargoParsingError(_))
+        ));
     }
 
     #[test]
@@ -216,18 +215,15 @@ category: Systems Programming
 featured: true
 "#;
 
-        let result =
-            build_github_project(&repository, cargo_content, readme_content);
+        let result = build_github_project(&repository, cargo_content, readme_content);
 
         assert!(matches!(
-        result,
-        Err(GithubProjectError::ReadmeParsingError(
-            ReadmeScanError::MissingClosingDelimiter
-        ))
-    ));
+            result,
+            Err(GithubProjectError::ReadmeParsingError(
+                ReadmeScanError::MissingClosingDelimiter
+            ))
+        ));
     }
-
-
 
     #[test]
     fn builds_github_project_without_readme_frontmatter() {
@@ -251,11 +247,7 @@ description = "A hexadecimal file viewer"
 
         let readme_content = "# Hexview\n\nA hexadecimal file viewer written in Rust.";
 
-        let result = build_github_project(
-            &repository,
-            cargo_content,
-            readme_content,
-        )
+        let result = build_github_project(&repository, cargo_content, readme_content)
             .expect("GitHub project should load without README frontmatter");
 
         assert_eq!(result.name, "hexview");

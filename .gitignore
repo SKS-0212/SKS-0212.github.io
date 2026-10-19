@@ -1,2 +1,5 @@
-/target
-/dist
+/target/
+/dist/
+/dist.staging/
+/dist.backup/
+.env
