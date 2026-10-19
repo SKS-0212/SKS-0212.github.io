@@ -12,6 +12,7 @@ skills = ["Rust", "Flutter", "Java", "PostgreSQL"]
 
 [github]
 username = "SKS-0212"
+
 [[profile.links]]
 label = "GitHub"
 url = "https://github.com/example"
