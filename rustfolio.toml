@@ -1,28 +1,26 @@
-projects = [
-    "../test-projects/project-a",
-    "../test-projects/project-b"
-]
+projects = []
 
 [profile]
 name = "Sachin Kumar Singh"
-headline = "Software Engineer · Rust · Systems"
-bio = "Building reliable software and learning systems from first principles."
+headline = "Software Engineer | Rust & Systems Programming"
+bio = "Software engineer building reliable applications and exploring systems programming with Rust. Experienced in Flutter, Java, and backend development."
 location = "India"
-skills = ["Rust", "Flutter", "Java", "PostgreSQL"]
+skills = [
+    "Rust",
+    "Flutter",
+    "Java",
+    "Spring Boot",
+    "PostgreSQL",
+    "Git"
+]
 
 [github]
 username = "SKS-0212"
 
 [[profile.links]]
 label = "GitHub"
-url = "https://github.com/example"
+url = "https://github.com/SKS-0212"
 
 [[profile.links]]
 label = "LinkedIn"
-url = "https://linkedin.com/in/example"
-
-[[experience]]
-company = "Example Company"
-role = "Software Engineer"
-start = "2025"
-description = "Building production software and developer-facing systems."
+url = "https://www.linkedin.com/in/sachin-kumar-singh-371710230/"
